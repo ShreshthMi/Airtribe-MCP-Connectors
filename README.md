@@ -398,9 +398,11 @@ Still not done: grades from people other than the author.
 
 ## How this was built
 
-Milestone 4 was built by an AI coding assistant (Claude Code, Anthropic's coding agent),
-working in a cloud session on 11 November 2026 from a handoff brief the author prepared and
-approved. The author made the decisions recorded there:
+Milestone 4 was built by an AI coding assistant (Claude Code, Anthropic's coding agent) on
+11 November 2026: first in a cloud session, then in a local session on the author's machine
+for the live scenarios, the video's live agent segment and the calibration. It worked from
+handoff briefs the author prepared and approved, and from the author's instructions. The
+author made the decisions recorded there:
 - the scope, building on Milestone 3;
 - the repository and branch;
 - how the video is produced;
@@ -428,8 +430,9 @@ chat.py                    terminal chat: --show-mcp, --session, --watch, --mcp-
 screening.py, claude_tasks.py, llm.py, embedders.py   Milestone 3, unchanged in role
 milestone2_rag/            Milestone 2 (and Milestone 1's tools inside it), vendored verbatim
 docs/                      mcp_architecture.md, state_machine.md, benchmarks.md, walkthrough.md
-scripts/                   mcp_tour.py, bench_mcp.py, record_mcp_demo.py, offline_agent_demo.py, run_scenarios.py, ...
-scenarios/                 chat scenarios 01-06 and 11-12; transcripts 01-10 (and 11-12 when run live)
+scripts/                   mcp_tour.py, bench_mcp.py, record_mcp_demo.py, offline_agent_demo.py, run_scenarios.py, calibrate.py, ...
+scenarios/                 chat scenarios 01-06 and 11-12; transcripts 01-12
+evaluation/                label sheets, LABELLING_BRIEF.md, results.md, calibration.md, calibration_with_author.md
 demo/                      mcp_demo.mp4 and its segments; Milestone 3's demo.mp4
 tests/                     the pytest suite
 resumes/ job_descriptions/ reports/   the data the server serves
