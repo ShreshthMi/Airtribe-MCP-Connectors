@@ -96,6 +96,13 @@ async def test_a_file_over_the_configured_size_limit_is_too_large(data_root, mon
     assert not ok and small["success"]
 
 
+async def test_an_unknown_tool_is_a_protocol_error_not_a_tool_result(server):
+    async with connect(server) as client:
+        with pytest.raises(McpError) as caught:
+            await client.call_tool("delete_everything", {})
+    assert caught.value.error.code == -32602 and "Unknown tool: delete_everything" in caught.value.error.message
+
+
 async def test_arguments_of_the_wrong_type_are_rejected_by_the_sdk_before_the_tool_runs(server):
     async with connect(server) as client:
         result = await client.call_tool("read_file", {"filepath": 5})

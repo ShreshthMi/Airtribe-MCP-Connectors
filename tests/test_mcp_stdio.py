@@ -87,6 +87,8 @@ def test_protocol_errors_get_json_rpc_error_codes(raw):
         ({"jsonrpc": "2.0", "id": None, "method": "ping"}, None, -32600),                       # null id
         ({"jsonrpc": "2.0", "id": "u-12", "method": "files/delete_everything"}, "u-12", -32601),  # unknown method
         ({"jsonrpc": "2.0", "id": 13, "method": "tools/call", "params": {"arguments": {}}}, 13, -32602),  # no name
+        ({"jsonrpc": "2.0", "id": 17, "method": "tools/call", "params": {"name": "rm_rf", "arguments": {}}}, 17,
+         -32602),                                                                                  # unknown tool
         ({"jsonrpc": "2.0", "id": 14, "method": "resources/read", "params": {"uri": "resume://nobody.txt"}}, 14, -32002),
         ({"jsonrpc": "2.0", "id": 15, "method": "resources/read", "params": {"uri": "resume://.env"}}, 15, -32602),
     ]

@@ -43,6 +43,7 @@ from typing import Any
 from mcp.server.fastmcp import Context, FastMCP
 from mcp.server.fastmcp.exceptions import ResourceError
 from mcp.server.fastmcp.resources import FunctionResource
+from mcp import types
 from mcp.shared.exceptions import McpError
 from mcp.types import INTERNAL_ERROR, INVALID_PARAMS, CallToolResult, ErrorData, TextContent, ToolAnnotations
 
@@ -235,7 +236,21 @@ class FileService:
 
 
 class FilesystemMCP(FastMCP):
-    """FastMCP, with resources/read failures sent as proper JSON-RPC error codes."""
+    """FastMCP, with two error paths aligned to the 2025-11-25 spec: resources/read failures
+    become JSON-RPC errors with proper codes, and a tools/call for a tool that does not exist
+    is a protocol error (-32602), not a tool result, as the spec's tools page specifies."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        handlers = self._mcp_server.request_handlers
+        sdk_call_tool = handlers[types.CallToolRequest]
+
+        async def call_tool(request: types.CallToolRequest):
+            if self._tool_manager.get_tool(request.params.name) is None:
+                raise McpError(ErrorData(code=INVALID_PARAMS, message=f"Unknown tool: {request.params.name}"))
+            return await sdk_call_tool(request)
+
+        handlers[types.CallToolRequest] = call_tool
 
     async def read_resource(self, uri):
         try:
