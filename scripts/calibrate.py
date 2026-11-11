@@ -180,16 +180,38 @@ def load_verdicts(posting: str, requirements: dict, candidate_ids: set[str], fol
     return {cid: cached[cid] for cid in candidate_ids}
 
 
-def judge_posting(posting: str, requirements: dict, resumes: dict[str, tuple[str, str]], top: list[dict], claude,
-                  folder: Path = VERDICTS_DIR, today: date | None = None) -> dict[str, str]:
-    """Judge these candidates (id -> (name, text)), cache their verdicts with Round 1's top 10; return failures."""
+def judged_among(posting: str, requirements: dict, candidate_ids: set[str], folder: Path = VERDICTS_DIR) -> dict:
+    """The cached verdicts for whichever of these candidates were judged on every requirement."""
     cached = _cache(posting, folder)["verdicts"]
-    verdicts, failures = claude_tasks.judge_candidates(claude, _texts(requirements), resumes, cached,
+    keys = {requirement_key(r) for r in _texts(requirements)}
+    return {cid: cached[cid] for cid in candidate_ids if keys <= set(cached.get(cid, {}))}
+
+
+def judge_posting(posting: str, requirements: dict, resumes: dict[str, tuple[str, str]], top: list[dict], claude,
+                  folder: Path = VERDICTS_DIR, today: date | None = None, order: list[str] | None = None) -> dict:
+    """Judge these candidates (id -> (name, text)), cache their verdicts with Round 1's top 10 and full order;
+    return failures."""
+    cached = _cache(posting, folder)
+    verdicts, failures = claude_tasks.judge_candidates(claude, _texts(requirements), resumes, cached["verdicts"],
                                                        today or date.today())
     folder.mkdir(parents=True, exist_ok=True)
-    (folder / f"{posting}.json").write_text(
-        json.dumps({"round1_top": top, "verdicts": verdicts}, indent=2, ensure_ascii=False) + "\n")
+    saved = {"round1_top": top, "round1_order": order or cached.get("round1_order", []), "verdicts": verdicts}
+    (folder / f"{posting}.json").write_text(json.dumps(saved, indent=2, ensure_ascii=False) + "\n")
     return failures
+
+
+def to_judge(people: dict[str, str], found: list[dict], corpus_size: int) -> dict[str, str]:
+    """Who to judge: everyone on a shortlist sheet, but on a sheet covering every resume only Round 1's top 10,
+    which is all the agent itself judges."""
+    top = {c["candidate_id"]: c["name"] for c in found}
+    return top if len(people) >= corpus_size else {**people, **top}
+
+
+def round1_metrics(order: list[str], gains: dict[str, float]) -> dict:
+    """Round 1's ranking of every resume: P@10 and nDCG@10 over the labelled ones; R@10 needs them all labelled."""
+    return {"p10": evaluate.precision_at(order, gains, evaluate.TOP),
+            "ndcg10": evaluate.ndcg_at(order, gains, evaluate.TOP),
+            "r10": evaluate.recall_at(order, gains, evaluate.TOP) if len(gains) >= len(order) else None}
 
 
 # --------------------------------------------------------------------------- #
@@ -220,11 +242,13 @@ def run_judge(args) -> None:
     try:
         for posting, people in sheet_candidates(args.labels, postings).items():
             reqs, jd = frozen(posting), evaluate.find_posting(posting, args.jobs).read_text(encoding="utf-8")
-            found = corpus.search(search_query(jd, reqs), k=evaluate.TOP, must_haves=reqs["must_have"])
+            ranking = corpus.search(search_query(jd, reqs), k=corpus.size, must_haves=reqs["must_have"])
+            found = ranking[:evaluate.TOP]
             top = [{"candidate_id": c["candidate_id"], "rag_score": c["rag_score"]} for c in found]
-            names = {**people, **{c["candidate_id"]: c["name"] for c in found}}
+            names = to_judge(people, found, corpus.size)
             resumes = {cid: (name, corpus.resume_text(cid)) for cid, name in names.items()}
-            failures = judge_posting(posting, reqs, resumes, top, claude)
+            failures = judge_posting(posting, reqs, resumes, top, claude,
+                                     order=[c["candidate_id"] for c in ranking])
             print(f"{posting}: {len(resumes) - len(failures)} judged" + (f", failed: {failures}" if failures else ""),
                   flush=True)
     finally:
@@ -233,20 +257,36 @@ def run_judge(args) -> None:
 
 
 def score_all(labels: dict) -> tuple[dict, dict, dict]:
-    """(ranking scores, decision scores, mean grades per posting) for every rule in both grids."""
+    """(ranking scores, decision scores, per-posting info) for every rule in both grids.
+
+    Round 1's top 10 must be judged; Round 3 is scored on the labelled candidates that were judged.
+    """
     ranking: dict = {r: {} for r in RANKING_GRID}
     decision: dict = {r: {} for r in DECISION_GRID}
-    gains_by_posting = {}
+    info = {}
     for posting, by_labeller in labels.items():
-        reqs, gains = frozen(posting), evaluate.mean_grades(by_labeller)
-        top = _cache(posting, VERDICTS_DIR)["round1_top"]
-        verdicts = load_verdicts(posting, reqs, set(gains) | {c["candidate_id"] for c in top}, VERDICTS_DIR)
-        gains_by_posting[posting] = gains
+        reqs, gains, cache = frozen(posting), evaluate.mean_grades(by_labeller), _cache(posting, VERDICTS_DIR)
+        top = cache["round1_top"]
+        verdicts = {**judged_among(posting, reqs, set(gains), VERDICTS_DIR),
+                    **load_verdicts(posting, reqs, {c["candidate_id"] for c in top}, VERDICTS_DIR)}
+        order = cache.get("round1_order", [])
+        info[posting] = {"gains": gains, "scored": {cid: g for cid, g in gains.items() if cid in verdicts},
+                         "round1": round1_metrics(order, gains) if order else None}
         for rules in RANKING_GRID:
             ranking[rules][posting] = ranking_metrics(rules, reqs, top, verdicts, gains)
         for rules in DECISION_GRID:
             decision[rules][posting] = recommendation_metrics(rules, reqs, verdicts, gains)
-    return ranking, decision, gains_by_posting
+    return ranking, decision, info
+
+
+def _round1_table(info: dict) -> list[str]:
+    rows = [(p, i["round1"], len(i["gains"])) for p, i in info.items() if i["round1"]]
+    if not rows:
+        return ["No Round 1 order cached; run calibrate.py judge."]
+    lines = ["| Posting | labelled | P@10 | nDCG@10 | R@10 |", "|---|---|---|---|---|"]
+    lines += [f"| {p} | {n} | {evaluate._cell(m['p10'])} | {evaluate._cell(m['ndcg10'])} | {evaluate._cell(m['r10'])} |"
+              for p, m, n in rows]
+    return lines + ["", "R@10 is shown only where the labels cover every resume (n/a on shortlist sheets)."]
 
 
 def grade_summary(gains_by_posting: dict[str, dict[str, float]]) -> list[str]:
@@ -311,11 +351,15 @@ def _held_out(scores: dict, key: str, describe) -> list[str]:
                         f"{better} of {len(held)} postings, worse on {worse}, the same on {tied}."]
 
 
-def render(labels: dict, ranking: dict, decision: dict, gains: dict, today: date) -> str:
-    who = "; ".join(f"{p}: {', '.join(sorted(by))} ({len(gains[p])} candidates)" for p, by in labels.items())
+def render(labels: dict, ranking: dict, decision: dict, info: dict, today: date) -> str:
+    who = "; ".join(f"{p}: {', '.join(sorted(by))} ({len(info[p]['gains'])} labelled, {len(info[p]['scored'])} judged)"
+                    for p, by in labels.items())
     lines = [f"# Calibrating Round 2 and Round 3 against human labels ({today.isoformat()})", "",
-             f"Labels: {who}. A candidate's grade is the mean of these labellers' grades.", "",
-             "Agreement between labellers:", *_kappas(labels), "", *grade_summary(gains), "",
+             f"Labels: {who}. A candidate's grade is the mean of these labellers' grades; Round 3 is scored on the "
+             "labelled candidates Claude judged (on a sheet covering every resume, Round 1's top 10).", "",
+             "Agreement between labellers:", *_kappas(labels), "",
+             *grade_summary({p: i["scored"] for p, i in info.items()}), "",
+             "## Round 1: the hybrid search's ranking of all 100 resumes", "", *_round1_table(info), "",
              "## Round 3: the hire / borderline / no hire rule", "",
              "Kappa: quadratic-weighted, the call (2 / 1 / 0) against the rounded mean grade. Agreement: share "
              "where they are equal. Hire precision: share of Hire calls graded 1 or more. Missed: graded "
@@ -339,8 +383,8 @@ def run_sweep(args) -> str:
         labels = {p: by for p, by in labels.items() if by}
     if not labels:
         raise ValueError("No graded sheets from those labellers.")
-    ranking, decision, gains = score_all(labels)
-    report = render(labels, ranking, decision, gains, date.today())
+    ranking, decision, info = score_all(labels)
+    report = render(labels, ranking, decision, info, date.today())
     args.out.write_text(report)
     return report
 

@@ -156,7 +156,7 @@ def test_the_sweep_reports_both_rounds_held_out_and_labeller_agreement(tmp_path,
     assert "A vs self: weighted kappa" in report
     assert "**(current)**" in report
     assert report.count("Held out, the rules chosen on the other postings") == 2
-    assert "p1: A, self (3 candidates)" in report
+    assert "p1: A, self (3 labelled, 3 judged)" in report
 
 
 def test_a_rule_that_gives_everyone_the_same_call_scores_zero_kappa_however_often_it_agrees():
@@ -175,3 +175,44 @@ def test_the_report_warns_when_nobody_was_graded_would_interview():
 
     assert "no candidate was graded 2" in " ".join(lines).lower()
     assert "always borderline" in " ".join(lines).lower()
+
+
+def test_a_sheet_covering_every_resume_is_judged_only_on_round1s_top_10():
+    people = {f"c{i}": f"C{i}" for i in range(100)}
+    found = [{"candidate_id": "c3", "name": "C3"}, {"candidate_id": "c7", "name": "C7"}]
+
+    assert calibrate.to_judge(people, found, corpus_size=100) == {"c3": "C3", "c7": "C7"}
+    assert calibrate.to_judge({"c1": "C1"}, found, corpus_size=100) == {"c1": "C1", "c3": "C3", "c7": "C7"}
+
+
+def test_round1_recall_is_reported_only_when_the_labels_cover_every_resume():
+    order = ["a", "b", "c", "d"]
+
+    full = calibrate.round1_metrics(order, {"a": 2.0, "b": 0.0, "c": 0.0, "d": 1.0})
+    partial = calibrate.round1_metrics(order, {"a": 2.0, "d": 1.0})
+
+    assert full["r10"] == pytest.approx(1.0)
+    assert partial["r10"] is None
+    assert partial["p10"] == pytest.approx(1.0)
+
+
+def test_round3_is_scored_on_the_labelled_candidates_that_were_judged(tmp_path, monkeypatch):
+    met = VERDICT_KINDS[0]
+    (tmp_path / "labels").mkdir()
+    rows = "".join(f"{cid},{cid},resumes/{cid}.md,{g},\n" for cid, g in {"a": 2, "b": 0, "c": 1, "d": 0}.items())
+    (tmp_path / "labels" / "p1_A.csv").write_text("candidate_id,name,resume_path,human_grade,notes\n" + rows)
+    (tmp_path / "p1.json").write_text(json.dumps(REQS))
+    (tmp_path / "verdicts").mkdir()
+    (tmp_path / "verdicts" / "p1.json").write_text(json.dumps({
+        "round1_top": [{"candidate_id": "a", "rag_score": 0.9}, {"candidate_id": "c", "rag_score": 0.8}],
+        "round1_order": ["a", "c", "b", "d"],
+        "verdicts": {cid: verdicts_for([met] * 5) for cid in ("a", "c")}}))
+    monkeypatch.setattr(calibrate, "VERDICTS_DIR", tmp_path / "verdicts")
+    monkeypatch.setattr(calibrate.evaluate, "REQUIREMENTS_DIR", tmp_path)
+    out = tmp_path / "calibration.md"
+
+    calibrate.main(["sweep", "--labels", str(tmp_path / "labels"), "--out", str(out)])
+
+    report = out.read_text()
+    assert "p1: A (4 labelled, 2 judged)" in report
+    assert "## Round 1" in report
