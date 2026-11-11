@@ -64,9 +64,10 @@ def provider_from_env() -> str:
 
 class Corpus:
     def __init__(self, root: Path = PROJECT_ROOT, db_path: Path | None = None, mcp: MCPClient | None = None,
-                 on_mcp_call: Callable[[str, str, dict], None] | None = None):
+                 on_mcp_call: Callable[[str, str, dict], None] | None = None, extra=None):
         self.root = Path(root)
         self._mcp, self._on_mcp_call = mcp, on_mcp_call
+        self.extra = extra  # an mcp_hub.MCPHub of other MCP servers (e.g. fetch), tools named server__tool
         self._mcp_lock = threading.Lock()
         self.db_path = Path(db_path) if db_path else index_dir(provider_from_env(), self.root)
         registry_file = self.db_path / "candidates.json"
@@ -201,15 +202,32 @@ class Corpus:
 
     # ---- every other tool the MCP server offers ----------------------------- #
     def mcp_tools(self) -> list[dict]:
-        """The server's tools (from tools/list) as Anthropic tool schemas."""
+        """The filesystem server's tools (from tools/list), plus any other servers' as server__tool,
+        all as Anthropic tool schemas."""
         try:
-            return self.mcp.list_tools()
+            return self.mcp.list_tools() + (self.extra.tools() if self.extra else [])
         except MCPClientError as exc:
             raise CorpusError(str(exc)) from exc
 
     def call_mcp_tool(self, name: str, args: dict) -> tuple[bool, dict]:
+        if self.extra is not None and self.extra.owns(name):
+            try:
+                return self.extra.call(name, args)
+            except MCPClientError as exc:
+                raise CorpusError(str(exc)) from exc
         return self._call(name, args)
+
+    def fetch_url(self, url: str) -> str | None:
+        """A web page's text through the fetch MCP server, or None when no fetch server is connected."""
+        if self.extra is None or not self.extra.owns("fetch__fetch"):
+            return None
+        failed, data = self.call_mcp_tool("fetch__fetch", {"url": url, "max_length": 20000})
+        if failed:
+            raise CorpusError(f"Could not fetch {url}: {data.get('text') or data.get('message') or data}")
+        return data.get("text") or data.get("content") or json.dumps(data)
 
     def close(self) -> None:
         if self._mcp is not None:
             self._mcp.close()
+        if self.extra is not None:
+            self.extra.close()

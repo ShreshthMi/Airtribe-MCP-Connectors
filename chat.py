@@ -7,6 +7,7 @@ Chat with the matching agent in the terminal.
   python chat.py --session acme-frontend                       # start, or resume, a named session
   python chat.py --sessions                                    # list the saved sessions
   python chat.py --show-mcp --watch                            # show MCP calls; announce new resumes
+  python chat.py --mcp-servers                                 # also connect mcp_servers.json (fetch)
 
 The graph runs until it reaches human_feedback, where interrupt() pauses it. This loop
 then reads the next message and resumes the graph with Command(resume=message). While a
@@ -156,6 +157,9 @@ def main() -> None:
     parser.add_argument("--show-mcp", action="store_true", help="Show each request the agent sends to the MCP server")
     parser.add_argument("--watch", action="store_true", help="Watch resumes/ through the MCP server and tell the "
                                                               "agent about new files")
+    parser.add_argument("--mcp-servers", nargs="?", const=str(ROOT / "mcp_servers.json"), metavar="JSON",
+                        help="Also connect the other MCP servers in this file (default mcp_servers.json), "
+                             "e.g. fetch, so a posting can be given by URL")
     args = parser.parse_args()
     load_dotenv(ROOT / ".env")
 
@@ -168,6 +172,10 @@ def main() -> None:
     agent = MatchingAgent()
     if args.show_mcp:
         agent.mcp_observer = show_mcp_call
+    if args.mcp_servers:
+        from mcp_hub import MCPHub  # starts each server listed there except filesystem, which the corpus runs
+        agent.extra_mcp = MCPHub(Path(args.mcp_servers), exclude=("filesystem",), on_call=agent.mcp_observer)
+        console.print(f"[dim]Also connected: {', '.join(agent.extra_mcp.clients) or 'no other MCP servers'}.[/dim]")
     try:
         converse(agent, agent.build(checkpointer=saver), args, script)
     finally:

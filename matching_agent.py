@@ -88,6 +88,7 @@ class MatchingAgent:
         self._claude, self._corpus = claude, corpus
         self.today = today or date.today()
         self.mcp_observer = None  # called with (method, name, arguments) before each MCP request, e.g. by chat.py
+        self.extra_mcp = None     # an mcp_hub.MCPHub of other MCP servers, e.g. fetch (chat.py --mcp-servers)
 
     # Created on first use, so drawing the diagram needs neither an API key nor an index.
     @property
@@ -99,7 +100,7 @@ class MatchingAgent:
     @property
     def corpus(self) -> Corpus:
         if self._corpus is None:
-            self._corpus = Corpus(on_mcp_call=self.mcp_observer)
+            self._corpus = Corpus(on_mcp_call=self.mcp_observer, extra=self.extra_mcp)
         return self._corpus
 
     def close(self) -> None:
@@ -130,8 +131,15 @@ class MatchingAgent:
 
     # ---- Parse JD -------------------------------------------------------------- #
     def parse_jd(self, state: ScreeningState) -> dict:
-        """Get the job description text: pasted, or read from a file with read_file on the MCP server."""
+        """Get the job description text: pasted, read from a file with read_file on the filesystem MCP
+        server, or fetched from a URL with the fetch MCP server when one is connected."""
         text = (state.get("jd_input") or "").strip()
+        url = URL.search(text)
+        if url and len(text) < 300 and getattr(self.corpus, "fetch_url", None):  # "Screen for the posting at <URL>"
+            _progress(f"Fetching the posting through the fetch MCP server: {url.group(0)}")
+            fetched = self.corpus.fetch_url(url.group(0))
+            if fetched is not None:
+                text = fetched.strip()
         if "\n" not in text and text.lower().endswith(DOCUMENT_SUFFIXES):
             result = self.corpus.read_file(text)
             if not result.get("success"):
@@ -314,6 +322,9 @@ class MatchingAgent:
 
 
 # ---- routing: each function reads next_step, set by the node before it -------- #
+URL = re.compile(r"https?://[^\s<>()\[\]\"']+")
+
+
 def route_after_parse(state: ScreeningState) -> str:
     return "extract_requirements" if state.get("next_step") == "continue" else "human_feedback"
 

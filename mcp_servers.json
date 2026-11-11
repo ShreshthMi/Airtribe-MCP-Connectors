@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "${PYTHON}",
+      "args": ["filesystem_mcp_server.py"],
+      "description": "Resumes, job descriptions and reports through the Milestone 1 tools (this project)"
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "description": "Fetches a web page as Markdown (the reference MCP fetch server, run in its own environment)",
+      "env": {
+        "HTTPS_PROXY": "${HTTPS_PROXY}",
+        "https_proxy": "${https_proxy}",
+        "NO_PROXY": "${NO_PROXY}",
+        "no_proxy": "${no_proxy}",
+        "SSL_CERT_FILE": "${SSL_CERT_FILE}",
+        "REQUESTS_CA_BUNDLE": "${REQUESTS_CA_BUNDLE}",
+        "UV_NATIVE_TLS": "${UV_NATIVE_TLS}"
+      }
+    }
+  }
+}
