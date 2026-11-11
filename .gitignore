@@ -13,3 +13,6 @@ chroma_db*/
 job_descriptions/real_*
 # Labeller packs and real-posting screenings: derived from postings we may not redistribute
 evaluation/private/
+# Milestone 4: saved chat sessions (SQLite checkpoints) and the MCP server's log
+.state/
+logs/

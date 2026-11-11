@@ -1,0 +1,18 @@
+# Configuration for filesystem_mcp_server.py.
+# Command-line flags and MCP_FS_* environment variables override these values;
+# anything left out falls back to the defaults in server_config.py.
+[server]
+root = "."                                   # relative to this file
+readable_folders = ["resumes", "job_descriptions", "reports"]
+writable_folders = ["reports"]               # writes never replace an existing file
+allowed_extensions = [".txt", ".md", ".pdf", ".docx", ".json", ".csv"]
+max_file_mb = 20
+batch_max_files = 200
+batch_concurrency = 8
+batch_preview_chars = 160
+watch_debounce_ms = 300
+watch_force_polling = false
+transport = "stdio"
+host = "127.0.0.1"
+port = 8765
+log_level = "INFO"
