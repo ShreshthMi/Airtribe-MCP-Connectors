@@ -1,0 +1,12 @@
+# The live chat segment of the Milestone 4 video (scripts/record_mcp_demo.py), run as
+#   chat.py --show-mcp --mcp-servers --script demo/mcp_demo_script.txt
+# Lines starting with '## ' are the captions for the message after them.
+## A posting given by URL: the fetch MCP server retrieves it; magenta lines are the agent's MCP requests. Then three screening rounds over 100 resumes.
+Screen candidates for the posting at https://raw.githubusercontent.com/ShreshthMi/Airtribe-MCP-Connectors/main/job_descriptions/backend_engineer.txt
+## Claude's file tools come from the filesystem server's tools/list; it opens and searches a resume over MCP.
+Open the top candidate's resume and check whether it mentions Kafka and Redis
+## batch_process is a server tool the agent has no code for: it reached Claude through tools/list.
+Use batch_process with a keyword search to count how many of all the resumes mention Kubernetes
+## Reports are written through the server, which keeps writes to reports/ and never replaces a file.
+Save a three-line summary of the shortlist to reports/backend-shortlist-summary.md
+quit
