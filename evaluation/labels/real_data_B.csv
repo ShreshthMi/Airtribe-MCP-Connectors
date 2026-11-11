@@ -1,13 +1,13 @@
 candidate_id,name,resume_path,human_grade,notes
-amina_diallo,Amina Diallo,resumes/amina_diallo.txt,,
-diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,,
-hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,,
-jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,,
-kofi_asante,Kofi Asante,resumes/kofi_asante.md,,
-lars_johansson,Lars Johansson,resumes/lars_johansson.md,,
-li_wei,Li Wei,resumes/li_wei.txt,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-rahul_verma,Rahul Verma,resumes/rahul_verma.md,,
-sara_kim,Sara Kim,resumes/sara_kim.txt,,
-sven_larsen,Sven Larsen,resumes/sven_larsen.md,,
-thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,,
+amina_diallo,Amina Diallo,resumes/amina_diallo.txt,0,Three years with BigQuery and Airflow; no production Snowflake or dbt experience.
+diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,2,"Five years of ingestion pipelines with production Snowflake, Airflow DAGs, and dbt models."
+hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,1,Snowflake/dbt modeling fits; end-to-end platform creation and complex DAG ownership are unclear.
+jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,0,"Strong Spark streaming background lacks Snowflake, dbt, and demonstrated DAG orchestration."
+kofi_asante,Kofi Asante,resumes/kofi_asante.md,0,"Databricks pipeline work lacks Snowflake, dbt, and demonstrated DAG orchestration."
+lars_johansson,Lars Johansson,resumes/lars_johansson.md,1,"Senior pipelines, Airflow, and warehouse ownership; Snowflake and dbt experience are missing."
+li_wei,Li Wei,resumes/li_wei.txt,0,ML platform and retraining work lacks Snowflake/dbt warehouse modeling experience.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,0,Cloud platform automation lacks data pipeline orchestration and Snowflake/dbt modeling.
+rahul_verma,Rahul Verma,resumes/rahul_verma.md,2,"Large-scale Airflow pipelines plus Snowflake migration, dbt models, and data quality tooling."
+sara_kim,Sara Kim,resumes/sara_kim.txt,0,Experimentation and metrics work lacks production pipeline and DAG orchestration ownership.
+sven_larsen,Sven Larsen,resumes/sven_larsen.md,1,"Strong platform, Airflow, and dbt experience, but production Snowflake experience is missing."
+thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,1,Strong Snowflake warehouse and dbt work; under five years and DAG ownership need clarification.

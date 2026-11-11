@@ -273,7 +273,7 @@ fetch server against a local web server (with `--allow-private-ips` for that tes
 
 ## Tests and scenarios
 
-`.venv/bin/python -m pytest`: 316 tests, offline, no API key, about half a minute (two of
+`.venv/bin/python -m pytest`: 332 tests, offline, no API key, about half a minute (two of
 them are Linux-only and are skipped on macOS). That is Milestone 3's suite plus the
 MCP tests:
 
@@ -340,12 +340,46 @@ Claude) can play the model's part: record it with `--only chat_offline` and rend
 The recorded sessions are in `demo/segments/`. Milestone 3's video is still at
 [`demo/demo.mp4`](demo/demo.mp4).
 
+## Calibration against independent labels
+
+The Milestone 3 review asked for independent labellers, broader resume coverage, and
+ranking and hire thresholds calibrated on the results. On 11 November 2026:
+
+- **Labellers.** Two labellers, A and B, graded five real postings blind: the three
+  shortlist sheets (40 candidates) and two sheets covering all 100 resumes (frontend and
+  ML), 240 grades each. **They are AI models, not people:** two separate OpenAI Codex
+  sessions. Each was given only the labelling pack: the brief, postings, resumes and blank
+  sheets, with no code, no agent output and no other grades. Their session logs mention no
+  path outside their own folder. They are independent of the system under test (Claude)
+  and of the author, but not of each other: on the full postings they agree on 93-98% of
+  grades (weighted kappa 0.93 over all 240), one model judging twice rather than two
+  views. The author's own grades (three postings) agree with either at chance level
+  (weighted kappa -0.15 and -0.12) and grade no one a 2.
+- **Coverage.** The two full sheets measure Round 1's recall, which Milestone 3 could not.
+- **Calibration.** [`scripts/calibrate.py`](scripts/calibrate.py) has Claude judge each
+  labelled candidate once (on the full sheets, Round 1's top 10: 60 candidates in all),
+  then scores the current Round 2 and Round 3 rules and a small grid of alternatives
+  offline. Each posting is held out in turn, so a rule must win on postings it was not
+  chosen on. Round 3 rules are chosen on quadratic-weighted kappa, because raw agreement
+  rewards a rule for calling everyone borderline. Results:
+  [`evaluation/calibration.md`](evaluation/calibration.md) (A and B) and
+  [`evaluation/calibration_with_author.md`](evaluation/calibration_with_author.md) (with the
+  author's grades), which reach the same conclusions.
+
+| Round | Against labellers A and B | Decision |
+|---|---|---|
+| 1, hybrid search | P@10 1.00 on frontend and 0.80 on ML. R@10 0.45 on frontend, the most possible with 22 relevant people (all 22 are in the top 30); 0.19 on ML, where 43 are relevant and 0.23 is the most possible (53% are in the top 30) | Unchanged. On a posting with many plausible people, most are lost at the top-10 cut |
+| 2, fit-score ranking | nDCG@10 0.83, P@5 0.96. No alternative weighting beats it on a held-out posting (worse on 3 of 5, the same on 2) | Kept as is |
+| 3, hire / borderline / no hire | The must-have rule calls all 60 judged candidates "no hire" (kappa 0), missing all 25 that A and B would interview. Fit thresholds, hire at fit ≥ 70 and borderline at ≥ 40, were chosen on held-out postings and beat it on 4 of 5 (the same on 1), missing 3 | **Reported, not applied.** The gains are small (held-out kappa 0.00-0.40), the AI labels disagree with the author's, and the video and transcripts were recorded with the current rule |
+
+Still not done: grades from people other than the author.
+
 ## What the Milestone 3 review asked for
 
 | Review point | What was done |
 |---|---|
 | Replace the in-memory checkpointer and per-run thread ids with durable state, so conversations resume across sessions | Done: SQLite checkpoints and named sessions ([above](#part-b-the-agent-through-mcp)) |
-| Expand the evaluation with independent labellers and broader resume coverage, then calibrate ranking and hire thresholds | **Not done in this milestone.** It needs people other than the author to label postings, which could not be arranged for this deadline. Milestone 3's evaluation tooling (`scripts/human_eval.py`, `scripts/evaluate.py`) is unchanged and ready for that. Its caveats still apply: one non-independent labeller, three real postings, Round 2 re-ranking not shown to help. |
+| Expand the evaluation with independent labellers and broader resume coverage, then calibrate ranking and hire thresholds | **Partly done** ([above](#calibration-against-independent-labels)). Two independent labellers graded five real postings, two of them covering all 100 resumes, and the ranking and hire rules were calibrated against them on held-out postings: the ranking is kept, and a fit-threshold hire rule is recommended but not applied. The labellers are AI (two OpenAI Codex sessions), not people; human labellers other than the author were not arranged. |
 
 ## Limitations
 
@@ -375,7 +409,8 @@ approved. The author made the decisions recorded there:
 
 The code, tests, documents and video in the Milestone 4 commits were written or produced
 by the assistant. The author reviewed them and is responsible for the submission.
-Milestones 1-3 are unchanged except where this README says so.
+Milestones 1-3 are unchanged except where this README says so. Labellers A and B in the
+calibration are two OpenAI Codex sessions, run by the author on 11 November 2026.
 
 ## Repository layout
 

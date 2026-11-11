@@ -1,101 +1,101 @@
 candidate_id,name,resume_path,human_grade,notes
-aaliyah_johnson,Aaliyah Johnson,resumes/aaliyah_johnson.txt,,
-adaeze_nwosu,Adaeze Nwosu,resumes/adaeze_nwosu.md,,
-ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,,
-aisha_khan,Aisha Khan,resumes/aisha_khan.md,,
-amara_okonkwo,Amara Okonkwo,resumes/amara_okonkwo.md,,
-amina_diallo,Amina Diallo,resumes/amina_diallo.txt,,
-ananya_rao,Ananya Rao,resumes/ananya_rao.md,,
-andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,,
-anika_bose,Anika Bose,resumes/anika_bose.md,,
-arash_karimi,Arash Karimi,resumes/arash_karimi.md,,
-arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,,
-ayesha_siddiqui,Ayesha Siddiqui,resumes/ayesha_siddiqui.txt,,
-benjamin_carter,Benjamin Carter,resumes/benjamin_carter.md,,
-camila_reyes,Camila Reyes,resumes/camila_reyes.md,,
-chloe_martin,Chloe Martin,resumes/chloe_martin.md,,
-clara_jensen,Clara Jensen,resumes/clara_jensen.pdf,,
-daniel_cohen,Daniel Cohen,resumes/daniel_cohen.md,,
-david_okafor,David Okafor,resumes/david_okafor.txt,,
-diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,,
-divya_reddy,Divya Reddy,resumes/divya_reddy.md,,
-elif_yildiz,Elif Yildiz,resumes/elif_yildiz.txt,,
-emily_chen,Emily Chen,resumes/emily_chen.txt,,
-esther_mwangi,Esther Mwangi,resumes/esther_mwangi.pdf,,
-ethan_walsh,Ethan Walsh,resumes/ethan_walsh.txt,,
-farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,,
-fatima_zahra,Fatima Zahra,resumes/fatima_zahra.txt,,
-felix_wagner,Felix Wagner,resumes/felix_wagner.docx,,
-gabriel_costa,Gabriel Costa,resumes/gabriel_costa.txt,,
-george_mathews,George Mathews,resumes/george_mathews.txt,,
-grace_liu,Grace Liu,resumes/grace_liu.md,,
-hana_sato,Hana Sato,resumes/hana_sato.md,,
-hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,,
-haruto_kimura,Haruto Kimura,resumes/haruto_kimura.txt,,
-hyunwoo_choi,Hyun-woo Choi,resumes/hyunwoo_choi.pdf,,
-ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,,
-ishaan_kapoor,Ishaan Kapoor,resumes/ishaan_kapoor.txt,,
-ivan_petrov,Ivan Petrov,resumes/ivan_petrov.md,,
-jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,,
-jessica_park,Jessica Park,resumes/jessica_park.txt,,
-john_doe,John Doe,resumes/john_doe.txt,,
-jonas_weber,Jonas Weber,resumes/jonas_weber.md,,
-karan_malhotra,Karan Malhotra,resumes/karan_malhotra.txt,,
-kenji_watanabe,Kenji Watanabe,resumes/kenji_watanabe.md,,
-kofi_asante,Kofi Asante,resumes/kofi_asante.md,,
-kwame_mensah,Kwame Mensah,resumes/kwame_mensah.txt,,
-lars_johansson,Lars Johansson,resumes/lars_johansson.md,,
-laura_bianchi,Laura Bianchi,resumes/laura_bianchi.docx,,
-leila_ahmadi,Leila Ahmadi,resumes/leila_ahmadi.md,,
-li_wei,Li Wei,resumes/li_wei.txt,,
-lucas_moreau,Lucas Moreau,resumes/lucas_moreau.docx,,
-lucia_romano,Lucia Romano,resumes/lucia_romano.md,,
-lukas_becker,Lukas Becker,resumes/lukas_becker.txt,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-mateo_silva,Mateo Silva,resumes/mateo_silva.md,,
-meera_pillai,Meera Pillai,resumes/meera_pillai.md,,
-mei_lin,Mei Lin,resumes/mei_lin.md,,
-mia_schneider,Mia Schneider,resumes/mia_schneider.md,,
-minh_nguyen,Minh Nguyen,resumes/minh_nguyen.txt,,
-nadia_benali,Nadia Benali,resumes/nadia_benali.md,,
-natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,,
-neha_gupta,Neha Gupta,resumes/neha_gupta.md,,
-noah_fischer,Noah Fischer,resumes/noah_fischer.docx,,
-olivia_bennett,Olivia Bennett,resumes/olivia_bennett.txt,,
-oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,,
-omar_haddad,Omar Haddad,resumes/omar_haddad.md,,
-oscar_mendes,Oscar Mendes,resumes/oscar_mendes.md,,
-pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,,
-patrick_oneill,Patrick O'Neill,resumes/patrick_oneill.txt,,
-priya_sharma,Priya Sharma,resumes/priya_sharma.md,,
-priyanka_nair,Priyanka Nair,resumes/priyanka_nair.txt,,
-rahul_verma,Rahul Verma,resumes/rahul_verma.md,,
-rania_saleh,Rania Saleh,resumes/rania_saleh.md,,
-ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,,
-rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,,
-resume_aisha_bello,Aisha Bello,resumes/resume_aisha_bello.docx,,
-resume_david_kim,David Kim,resumes/resume_david_kim.txt,,
-resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,,
-resume_john_doe,John Doe,resumes/resume_john_doe.pdf,,
-resume_john_smith,John Smith,resumes/resume_john_smith.docx,,
-resume_marcus_chen,Marcus Chen,resumes/resume_marcus_chen.pdf,,
-resume_priya_sharma,Priya Sharma,resumes/resume_priya_sharma.pdf,,
-resume_sofia_novak,Sofia Novak,resumes/resume_sofia_novak.txt,,
-ricardo_alves,Ricardo Alves,resumes/ricardo_alves.txt,,
-rohan_desai,Rohan Desai,resumes/rohan_desai.txt,,
-samuel_osei,Samuel Osei,resumes/samuel_osei.md,,
-sara_kim,Sara Kim,resumes/sara_kim.txt,,
-siddharth_iyengar,Siddharth Iyengar,resumes/siddharth_iyengar.md,,
-sneha_kulkarni,Sneha Kulkarni,resumes/sneha_kulkarni.md,,
-sophie_laurent,Sophie Laurent,resumes/sophie_laurent.docx,,
-sven_larsen,Sven Larsen,resumes/sven_larsen.md,,
-tariq_mahmood,Tariq Mahmood,resumes/tariq_mahmood.txt,,
-thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,,
-tomas_herrera,Tomás Herrera,resumes/tomas_herrera.md,,
-tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,,
-vikram_iyer,Vikram Iyer,resumes/vikram_iyer.md,,
-vivek_menon,Vivek Menon,resumes/vivek_menon.txt,,
-william_turner,William Turner,resumes/william_turner.md,,
-yara_nasser,Yara Nasser,resumes/yara_nasser.md,,
-yuki_tanaka,Yuki Tanaka,resumes/yuki_tanaka.txt,,
-zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,,
+aaliyah_johnson,Aaliyah Johnson,resumes/aaliyah_johnson.txt,0,Frontend component work; no backend service experience shown.
+adaeze_nwosu,Adaeze Nwosu,resumes/adaeze_nwosu.md,1,Production RAG and model evaluation; backend operations and observability unclear.
+ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,1,Operates high-volume Go and Kafka services; quality measurement and observability unclear.
+aisha_khan,Aisha Khan,resumes/aisha_khan.md,1,Python inference APIs and NLP experience; production observability unshown.
+amara_okonkwo,Amara Okonkwo,resumes/amara_okonkwo.md,0,Frontend delivery; no backend service ownership shown.
+amina_diallo,Amina Diallo,resumes/amina_diallo.txt,0,Airflow data quality work lacks backend service and production debugging evidence.
+ananya_rao,Ananya Rao,resumes/ananya_rao.md,2,"Production RAG, vector retrieval, rerankers and FastAPI with answer-quality evaluation."
+andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,0,Infrastructure and alerting experience lacks backend service development.
+anika_bose,Anika Bose,resumes/anika_bose.md,0,Statistical models and experiments lack backend service operations.
+arash_karimi,Arash Karimi,resumes/arash_karimi.md,0,Security tooling lacks backend service ownership and distributed-system debugging.
+arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,1,High-throughput backend and Kafka systems; observability and evaluation practices unclear.
+ayesha_siddiqui,Ayesha Siddiqui,resumes/ayesha_siddiqui.txt,0,Regression testing experience lacks backend service development and operations.
+benjamin_carter,Benjamin Carter,resumes/benjamin_carter.md,0,Recent management and earlier frontend work lack backend service ownership.
+camila_reyes,Camila Reyes,resumes/camila_reyes.md,0,Frontend work lacks backend service development and operations.
+chloe_martin,Chloe Martin,resumes/chloe_martin.md,0,Frontend component experience lacks backend service ownership.
+clara_jensen,Clara Jensen,resumes/clara_jensen.pdf,1,Operates Python services and improves API latency; observability and AI workflow unshown.
+daniel_cohen,Daniel Cohen,resumes/daniel_cohen.md,0,Native iOS work lacks backend service development and operations.
+david_okafor,David Okafor,resumes/david_okafor.txt,1,Substantial Python API experience; production observability and AI workflow unclear.
+diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,1,Python/Kafka ingestion and data quality checks; service operations and observability unclear.
+divya_reddy,Divya Reddy,resumes/divya_reddy.md,0,Incident response and infrastructure automation lack backend service development evidence.
+elif_yildiz,Elif Yildiz,resumes/elif_yildiz.txt,0,Frontend library work lacks backend service development.
+emily_chen,Emily Chen,resumes/emily_chen.txt,0,Frontend delivery and build tooling lack backend service operations.
+esther_mwangi,Esther Mwangi,resumes/esther_mwangi.pdf,0,"Models, dashboards and A/B tests lack backend service development."
+ethan_walsh,Ethan Walsh,resumes/ethan_walsh.txt,0,Frontend migrations and testing lack backend service ownership.
+farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,1,"Backend APIs, database design and latency tuning; observability and AI fluency unclear."
+fatima_zahra,Fatima Zahra,resumes/fatima_zahra.txt,0,Experimentation platform and NLP models lack backend production service evidence.
+felix_wagner,Felix Wagner,resumes/felix_wagner.docx,0,Infrastructure operations lack backend service development evidence.
+gabriel_costa,Gabriel Costa,resumes/gabriel_costa.txt,1,TypeScript APIs and on-call ownership; evaluation and AI coding practices unshown.
+george_mathews,George Mathews,resumes/george_mathews.txt,1,Prior Kafka backend development; current hands-on operations and AI fluency unclear.
+grace_liu,Grace Liu,resumes/grace_liu.md,0,Frontend design systems work lacks backend service ownership.
+hana_sato,Hana Sato,resumes/hana_sato.md,0,Frontend component work lacks backend service development.
+hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,0,Analytics modeling and scheduled jobs lack backend service operations.
+haruto_kimura,Haruto Kimura,resumes/haruto_kimura.txt,0,Native mobile implementation lacks backend service development.
+hyunwoo_choi,Hyun-woo Choi,resumes/hyunwoo_choi.pdf,1,Production models and ranking evaluation; backend services and observability unclear.
+ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,1,Operates high-volume microservices and tunes latency; evaluation and AI workflow unclear.
+ishaan_kapoor,Ishaan Kapoor,resumes/ishaan_kapoor.txt,1,Deployed models and ranking evaluation; backend operations and observability unclear.
+ivan_petrov,Ivan Petrov,resumes/ivan_petrov.md,0,Firmware and hardware tests lack backend service operations.
+jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,1,Scala/Kafka streaming and data quality work; backend service observability unshown.
+jessica_park,Jessica Park,resumes/jessica_park.txt,0,Forecasting models lack backend service development and operations.
+john_doe,John Doe,resumes/john_doe.txt,1,Production vision models and Python pipelines; backend observability and AI workflow unclear.
+jonas_weber,Jonas Weber,resumes/jonas_weber.md,0,Frontend framework work lacks backend service ownership.
+karan_malhotra,Karan Malhotra,resumes/karan_malhotra.txt,2,Python/FastAPI RAG products with vector search and retrieval-quality test sets.
+kenji_watanabe,Kenji Watanabe,resumes/kenji_watanabe.md,0,Mobile client work lacks backend service development and operations.
+kofi_asante,Kofi Asante,resumes/kofi_asante.md,0,Batch/streaming jobs lack backend service ownership and production debugging evidence.
+kwame_mensah,Kwame Mensah,resumes/kwame_mensah.txt,1,TypeScript APIs and tests with AWS deployment; observability and AI workflow unclear.
+lars_johansson,Lars Johansson,resumes/lars_johansson.md,1,Kafka streaming and data quality checks; backend service operations unclear.
+laura_bianchi,Laura Bianchi,resumes/laura_bianchi.docx,0,Mobile implementation lacks backend service development.
+leila_ahmadi,Leila Ahmadi,resumes/leila_ahmadi.md,1,Production NLP models and ranking evaluation; backend service observability unshown.
+li_wei,Li Wei,resumes/li_wei.txt,1,Operates model platforms and Python tooling; product services and observability unclear.
+lucas_moreau,Lucas Moreau,resumes/lucas_moreau.docx,0,Frontend library work lacks backend service development.
+lucia_romano,Lucia Romano,resumes/lucia_romano.md,0,Small frontend applications lack backend service experience.
+lukas_becker,Lukas Becker,resumes/lukas_becker.txt,0,Mobile apps and client sync lack backend service ownership.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,0,Cluster operations and Python automation lack backend service development.
+mateo_silva,Mateo Silva,resumes/mateo_silva.md,0,Security reviews and fixes lack backend service ownership evidence.
+meera_pillai,Meera Pillai,resumes/meera_pillai.md,2,Production LLM/RAG pipelines with ranking metrics and offline/online model evaluation.
+mei_lin,Mei Lin,resumes/mei_lin.md,0,Research model deployment lacks backend service ownership and operational debugging.
+mia_schneider,Mia Schneider,resumes/mia_schneider.md,1,Node.js APIs and on-call improvement; evaluation and AI coding practices unshown.
+minh_nguyen,Minh Nguyen,resumes/minh_nguyen.txt,0,Mobile client delivery lacks backend service ownership.
+nadia_benali,Nadia Benali,resumes/nadia_benali.md,0,Data science and experiments lack backend service development.
+natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,1,Operates high-volume Java/Kafka services; observability and evaluation practices unclear.
+neha_gupta,Neha Gupta,resumes/neha_gupta.md,0,Product metrics and roadmaps lack current backend service engineering evidence.
+noah_fischer,Noah Fischer,resumes/noah_fischer.docx,1,API development and on-call ownership; observability and AI coding practices unclear.
+olivia_bennett,Olivia Bennett,resumes/olivia_bennett.txt,0,Analytical models lack backend service development and operations.
+oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,1,Production Kafka microservices and distributed correctness; observability and AI fluency unclear.
+omar_haddad,Omar Haddad,resumes/omar_haddad.md,1,Go/Python automation with metrics and incident ownership; product backend experience unclear.
+oscar_mendes,Oscar Mendes,resumes/oscar_mendes.md,1,Backend latency tuning and service runbooks; observability and AI workflow unclear.
+pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,1,Python/Go services and latency tuning; evaluation and AI coding practices unshown.
+patrick_oneill,Patrick O'Neill,resumes/patrick_oneill.txt,0,Broad skills list lacks demonstrated backend service development and operations.
+priya_sharma,Priya Sharma,resumes/priya_sharma.md,2,"Production RAG/vector retrieval, ranking models and model tracking with CI/CD."
+priyanka_nair,Priyanka Nair,resumes/priyanka_nair.txt,0,Android implementation lacks backend service development.
+rahul_verma,Rahul Verma,resumes/rahul_verma.md,1,Large-scale Python/Kafka ingestion with data quality checks; service observability unclear.
+rania_saleh,Rania Saleh,resumes/rania_saleh.md,0,Infrastructure and alerting work lacks backend service development.
+ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,1,Spring Boot services and Kafka events; production debugging and AI fluency unshown.
+rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,0,Cloud architecture and automation lack backend application service ownership.
+resume_aisha_bello,Aisha Bello,resumes/resume_aisha_bello.docx,0,Product management lacks backend service engineering evidence.
+resume_david_kim,David Kim,resumes/resume_david_kim.txt,2,Tested low-latency Python model serving with profiling and automated drift monitoring.
+resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,1,Strong observability and production automation; backend product service development unclear.
+resume_john_doe,John Doe,resumes/resume_john_doe.pdf,2,"Python/FastAPI services, high-volume event pipelines, latency improvements and contract tests."
+resume_john_smith,John Smith,resumes/resume_john_smith.docx,0,Frontend component work lacks backend service ownership.
+resume_marcus_chen,Marcus Chen,resumes/resume_marcus_chen.pdf,2,"Kafka backend at scale with observability focus, correctness improvements and service tests."
+resume_priya_sharma,Priya Sharma,resumes/resume_priya_sharma.pdf,0,Statistical models and reports lack backend service development and operations.
+resume_sofia_novak,Sofia Novak,resumes/resume_sofia_novak.txt,0,Native mobile applications lack backend service development.
+ricardo_alves,Ricardo Alves,resumes/ricardo_alves.txt,0,Data science and dashboards lack backend service operations.
+rohan_desai,Rohan Desai,resumes/rohan_desai.txt,1,Django APIs and on-call improvement; evaluation and AI coding practices unshown.
+samuel_osei,Samuel Osei,resumes/samuel_osei.md,0,Incident response and infrastructure automation lack backend service development.
+sara_kim,Sara Kim,resumes/sara_kim.txt,0,Experimentation and predictive models lack backend service operations.
+siddharth_iyengar,Siddharth Iyengar,resumes/siddharth_iyengar.md,0,Python regression tests lack backend service development and production operations.
+sneha_kulkarni,Sneha Kulkarni,resumes/sneha_kulkarni.md,0,Mobile app implementation lacks backend service development.
+sophie_laurent,Sophie Laurent,resumes/sophie_laurent.docx,0,Product design lacks backend service development.
+sven_larsen,Sven Larsen,resumes/sven_larsen.md,1,Large-scale Kafka streaming and Python pipelines; backend service observability unclear.
+tariq_mahmood,Tariq Mahmood,resumes/tariq_mahmood.txt,2,"LLM pipelines, vector databases and Flask production models with ranking evaluation."
+thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,0,Warehouse work lacks backend services and operational debugging evidence.
+tomas_herrera,Tomás Herrera,resumes/tomas_herrera.md,1,Production ranking models and MLflow tracking; service observability and AI fluency unclear.
+tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,1,Operates high-volume Java/Kafka services; observability and evaluation practices unclear.
+vikram_iyer,Vikram Iyer,resumes/vikram_iyer.md,1,Deployed RAG/vector retrieval; backend operations and quality-regression systems unclear.
+vivek_menon,Vivek Menon,resumes/vivek_menon.txt,1,Operates Kotlin/Kafka services; observability and evaluation practices unclear.
+william_turner,William Turner,resumes/william_turner.md,1,Rails APIs and asynchronous stack experience; production observability and AI workflow unclear.
+yara_nasser,Yara Nasser,resumes/yara_nasser.md,0,Quality gates and contract testing lack backend service development and operations.
+yuki_tanaka,Yuki Tanaka,resumes/yuki_tanaka.txt,0,Product design lacks backend service engineering experience.
+zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,0,Go CI/CD and SRE work lack backend application service development evidence.

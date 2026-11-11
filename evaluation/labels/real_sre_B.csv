@@ -1,12 +1,12 @@
 candidate_id,name,resume_path,human_grade,notes
-ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,,
-andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,,
-arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,,
-divya_reddy,Divya Reddy,resumes/divya_reddy.md,,
-felix_wagner,Felix Wagner,resumes/felix_wagner.docx,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,,
-omar_haddad,Omar Haddad,resumes/omar_haddad.md,,
-resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,,
-samuel_osei,Samuel Osei,resumes/samuel_osei.md,,
-zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,,
+ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,1,"Go and data-service operation fit; Linux, infrastructure automation, and incident ownership are unclear."
+andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,1,Production Kubernetes and incident work fit; programming beyond shell and data systems are unshown.
+arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,1,Strong software and Kubernetes/Terraform delivery; Linux and on-call reliability ownership are unclear.
+divya_reddy,Divya Reddy,resumes/divya_reddy.md,2,"SRE incident ownership, SLO improvements, Terraform, Kubernetes, and Linux/Python skills."
+felix_wagner,Felix Wagner,resumes/felix_wagner.docx,1,Strong infrastructure and incident experience; programming beyond shell and data systems are unshown.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,2,"Operates 40+ Kubernetes clusters with Terraform, Python automation, CI/CD, and Linux."
+oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,1,Operates distributed payment services with Kubernetes/Terraform; Linux and incident ownership are unclear.
+omar_haddad,Omar Haddad,resumes/omar_haddad.md,2,"Kubernetes/Terraform ownership with Go failover tooling, Linux, alerting, and on-call leadership."
+resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,2,"Production SRE ownership with Go/Python automation, Kubernetes/Terraform, and incident response."
+samuel_osei,Samuel Osei,resumes/samuel_osei.md,1,Incident and SLO experience fit; strong application programming and data-system experience are unshown.
+zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,2,"SLO and incident ownership with Linux, Kubernetes/Terraform, and Go deployment tooling."

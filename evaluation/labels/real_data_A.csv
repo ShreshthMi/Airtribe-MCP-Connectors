@@ -1,13 +1,13 @@
 candidate_id,name,resume_path,human_grade,notes
-amina_diallo,Amina Diallo,resumes/amina_diallo.txt,,
-diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,,
-hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,,
-jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,,
-kofi_asante,Kofi Asante,resumes/kofi_asante.md,,
-lars_johansson,Lars Johansson,resumes/lars_johansson.md,,
-li_wei,Li Wei,resumes/li_wei.txt,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-rahul_verma,Rahul Verma,resumes/rahul_verma.md,,
-sara_kim,Sara Kim,resumes/sara_kim.txt,,
-sven_larsen,Sven Larsen,resumes/sven_larsen.md,,
-thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,,
+amina_diallo,Amina Diallo,resumes/amina_diallo.txt,0,Three years of experience and no demonstrated Snowflake or dbt production work fall short of the requirements.
+diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,2,Production Snowflake ingestion with Airflow DAGs and dbt finance models covers the core stack.
+hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,1,Production Snowflake and tested dbt models fit; end-to-end ingestion and platform ownership need clarification.
+jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,0,Strong Spark streaming experience lacks demonstrated Snowflake modeling and dbt or equivalent warehouse tooling.
+kofi_asante,Kofi Asante,resumes/kofi_asante.md,0,Four years on Databricks lack the required Snowflake and DAG orchestration evidence.
+lars_johansson,Lars Johansson,resumes/lars_johansson.md,1,Owns warehouse modeling and Airflow pipelines at scale; Snowflake and dbt production experience is unshown.
+li_wei,Li Wei,resumes/li_wei.txt,0,ML platform and retraining orchestration experience does not establish Snowflake warehouse modeling or dbt delivery.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,0,Cloud infrastructure automation lacks data pipeline and governed warehouse modeling ownership.
+rahul_verma,Rahul Verma,resumes/rahul_verma.md,2,Large-scale Airflow pipelines plus Snowflake migration and dbt transformations demonstrate strong engineering fit.
+sara_kim,Sara Kim,resumes/sara_kim.txt,0,Experimentation and modeling work lacks DAG orchestration and end-to-end data platform engineering.
+sven_larsen,Sven Larsen,resumes/sven_larsen.md,1,Strong platform delivery with Airflow and dbt on BigQuery; required production Snowflake experience is unshown.
+thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,1,Snowflake warehouse consolidation and dbt metrics are relevant; four years and limited orchestration detail leave gaps.

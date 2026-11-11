@@ -1,18 +1,18 @@
 candidate_id,name,resume_path,human_grade,notes
-ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,,
-arash_karimi,Arash Karimi,resumes/arash_karimi.md,,
-arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,,
-farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,,
-felix_wagner,Felix Wagner,resumes/felix_wagner.docx,,
-george_mathews,George Mathews,resumes/george_mathews.txt,,
-ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-mateo_silva,Mateo Silva,resumes/mateo_silva.md,,
-natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,,
-oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,,
-pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,,
-ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,,
-rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,,
-resume_john_doe,John Doe,resumes/resume_john_doe.pdf,,
-tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,,
-vivek_menon,Vivek Menon,resumes/vivek_menon.txt,,
+ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,2,"Senior Go service ownership, production scale, and payment-ledger design."
+arash_karimi,Arash Karimi,resumes/arash_karimi.md,0,Application security work does not demonstrate backend service engineering ownership.
+arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,2,High-throughput Java payment microservices plus Kubernetes and Terraform delivery.
+farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,1,"Relevant ledger and API work; crypto, security, and senior service ownership need clarification."
+felix_wagner,Felix Wagner,resumes/felix_wagner.docx,0,Infrastructure and incident work do not establish backend API development experience.
+george_mathews,George Mathews,resumes/george_mathews.txt,1,Strong Java payments background; recent hands-on coding is unclear after years managing.
+ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,2,High-volume C# services with Azure and payment-ledger modeling.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,0,Platform automation experience lacks backend service and API development ownership.
+mateo_silva,Mateo Silva,resumes/mateo_silva.md,0,Security reviews and remediation do not establish senior backend service delivery.
+natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,2,Experienced Java service ownership at scale with payment-ledger design.
+oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,2,"Java payment microservices at 4,000 TPS with REST APIs and idempotency controls."
+pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,1,"Strong Go/Python backend work; financial-domain, crypto, and security experience are unshown."
+ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,1,"Relevant Java payment APIs, but four years and limited cloud ownership leave seniority uncertain."
+rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,0,Cloud architecture experience lacks hands-on backend service and API delivery.
+resume_john_doe,John Doe,resumes/resume_john_doe.pdf,1,Strong Python API engineering; crypto and financial-security experience are unshown.
+tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,2,Senior Java service delivery at high volume with payment-ledger design and Kubernetes.
+vivek_menon,Vivek Menon,resumes/vivek_menon.txt,2,Senior JVM service design and operation at scale with payment-ledger and CI experience.

@@ -1,12 +1,12 @@
 candidate_id,name,resume_path,human_grade,notes
-ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,,
-andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,,
-arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,,
-divya_reddy,Divya Reddy,resumes/divya_reddy.md,,
-felix_wagner,Felix Wagner,resumes/felix_wagner.docx,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,,
-omar_haddad,Omar Haddad,resumes/omar_haddad.md,,
-resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,,
-samuel_osei,Samuel Osei,resumes/samuel_osei.md,,
-zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,,
+ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,1,Go service operations and distributed data systems fit; Linux and infrastructure automation depth is unclear.
+andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,1,Kubernetes operations and SLO improvements fit; programming beyond Bash and data-service experience are unshown.
+arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,2,Scaled service engineering plus Kubernetes and Terraform migration demonstrate strong software-to-infrastructure fit.
+divya_reddy,Divya Reddy,resumes/divya_reddy.md,2,Terraform automation and incident ownership with SLO improvements demonstrate directly relevant reliability experience.
+felix_wagner,Felix Wagner,resumes/felix_wagner.docx,1,Strong infrastructure and incident experience; programming beyond shell and production data-system work are unclear.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,2,Operates 40-plus Kubernetes clusters with Terraform and builds Python automation and deployment pipelines.
+oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,2,Hands-on Java service operations on Terraform-managed Kubernetes with Kafka and Redis fit the engineering scope.
+omar_haddad,Omar Haddad,resumes/omar_haddad.md,2,Go failover tooling and Terraform-managed Kubernetes combine with Linux administration and on-call leadership.
+resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,2,Production Python automation and Go release tooling complement Kubernetes migrations and incident leadership.
+samuel_osei,Samuel Osei,resumes/samuel_osei.md,1,Incident response and SLO work are relevant; software programming and distributed data-system depth are unshown.
+zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,2,Go deployment tooling with Linux and Kubernetes skills supports demonstrated incident and SLO ownership.

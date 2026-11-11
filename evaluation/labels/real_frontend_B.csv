@@ -1,101 +1,101 @@
 candidate_id,name,resume_path,human_grade,notes
-aaliyah_johnson,Aaliyah Johnson,resumes/aaliyah_johnson.txt,,
-adaeze_nwosu,Adaeze Nwosu,resumes/adaeze_nwosu.md,,
-ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,,
-aisha_khan,Aisha Khan,resumes/aisha_khan.md,,
-amara_okonkwo,Amara Okonkwo,resumes/amara_okonkwo.md,,
-amina_diallo,Amina Diallo,resumes/amina_diallo.txt,,
-ananya_rao,Ananya Rao,resumes/ananya_rao.md,,
-andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,,
-anika_bose,Anika Bose,resumes/anika_bose.md,,
-arash_karimi,Arash Karimi,resumes/arash_karimi.md,,
-arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,,
-ayesha_siddiqui,Ayesha Siddiqui,resumes/ayesha_siddiqui.txt,,
-benjamin_carter,Benjamin Carter,resumes/benjamin_carter.md,,
-camila_reyes,Camila Reyes,resumes/camila_reyes.md,,
-chloe_martin,Chloe Martin,resumes/chloe_martin.md,,
-clara_jensen,Clara Jensen,resumes/clara_jensen.pdf,,
-daniel_cohen,Daniel Cohen,resumes/daniel_cohen.md,,
-david_okafor,David Okafor,resumes/david_okafor.txt,,
-diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,,
-divya_reddy,Divya Reddy,resumes/divya_reddy.md,,
-elif_yildiz,Elif Yildiz,resumes/elif_yildiz.txt,,
-emily_chen,Emily Chen,resumes/emily_chen.txt,,
-esther_mwangi,Esther Mwangi,resumes/esther_mwangi.pdf,,
-ethan_walsh,Ethan Walsh,resumes/ethan_walsh.txt,,
-farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,,
-fatima_zahra,Fatima Zahra,resumes/fatima_zahra.txt,,
-felix_wagner,Felix Wagner,resumes/felix_wagner.docx,,
-gabriel_costa,Gabriel Costa,resumes/gabriel_costa.txt,,
-george_mathews,George Mathews,resumes/george_mathews.txt,,
-grace_liu,Grace Liu,resumes/grace_liu.md,,
-hana_sato,Hana Sato,resumes/hana_sato.md,,
-hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,,
-haruto_kimura,Haruto Kimura,resumes/haruto_kimura.txt,,
-hyunwoo_choi,Hyun-woo Choi,resumes/hyunwoo_choi.pdf,,
-ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,,
-ishaan_kapoor,Ishaan Kapoor,resumes/ishaan_kapoor.txt,,
-ivan_petrov,Ivan Petrov,resumes/ivan_petrov.md,,
-jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,,
-jessica_park,Jessica Park,resumes/jessica_park.txt,,
-john_doe,John Doe,resumes/john_doe.txt,,
-jonas_weber,Jonas Weber,resumes/jonas_weber.md,,
-karan_malhotra,Karan Malhotra,resumes/karan_malhotra.txt,,
-kenji_watanabe,Kenji Watanabe,resumes/kenji_watanabe.md,,
-kofi_asante,Kofi Asante,resumes/kofi_asante.md,,
-kwame_mensah,Kwame Mensah,resumes/kwame_mensah.txt,,
-lars_johansson,Lars Johansson,resumes/lars_johansson.md,,
-laura_bianchi,Laura Bianchi,resumes/laura_bianchi.docx,,
-leila_ahmadi,Leila Ahmadi,resumes/leila_ahmadi.md,,
-li_wei,Li Wei,resumes/li_wei.txt,,
-lucas_moreau,Lucas Moreau,resumes/lucas_moreau.docx,,
-lucia_romano,Lucia Romano,resumes/lucia_romano.md,,
-lukas_becker,Lukas Becker,resumes/lukas_becker.txt,,
-maria_garcia,Maria Garcia,resumes/maria_garcia.txt,,
-mateo_silva,Mateo Silva,resumes/mateo_silva.md,,
-meera_pillai,Meera Pillai,resumes/meera_pillai.md,,
-mei_lin,Mei Lin,resumes/mei_lin.md,,
-mia_schneider,Mia Schneider,resumes/mia_schneider.md,,
-minh_nguyen,Minh Nguyen,resumes/minh_nguyen.txt,,
-nadia_benali,Nadia Benali,resumes/nadia_benali.md,,
-natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,,
-neha_gupta,Neha Gupta,resumes/neha_gupta.md,,
-noah_fischer,Noah Fischer,resumes/noah_fischer.docx,,
-olivia_bennett,Olivia Bennett,resumes/olivia_bennett.txt,,
-oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,,
-omar_haddad,Omar Haddad,resumes/omar_haddad.md,,
-oscar_mendes,Oscar Mendes,resumes/oscar_mendes.md,,
-pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,,
-patrick_oneill,Patrick O'Neill,resumes/patrick_oneill.txt,,
-priya_sharma,Priya Sharma,resumes/priya_sharma.md,,
-priyanka_nair,Priyanka Nair,resumes/priyanka_nair.txt,,
-rahul_verma,Rahul Verma,resumes/rahul_verma.md,,
-rania_saleh,Rania Saleh,resumes/rania_saleh.md,,
-ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,,
-rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,,
-resume_aisha_bello,Aisha Bello,resumes/resume_aisha_bello.docx,,
-resume_david_kim,David Kim,resumes/resume_david_kim.txt,,
-resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,,
-resume_john_doe,John Doe,resumes/resume_john_doe.pdf,,
-resume_john_smith,John Smith,resumes/resume_john_smith.docx,,
-resume_marcus_chen,Marcus Chen,resumes/resume_marcus_chen.pdf,,
-resume_priya_sharma,Priya Sharma,resumes/resume_priya_sharma.pdf,,
-resume_sofia_novak,Sofia Novak,resumes/resume_sofia_novak.txt,,
-ricardo_alves,Ricardo Alves,resumes/ricardo_alves.txt,,
-rohan_desai,Rohan Desai,resumes/rohan_desai.txt,,
-samuel_osei,Samuel Osei,resumes/samuel_osei.md,,
-sara_kim,Sara Kim,resumes/sara_kim.txt,,
-siddharth_iyengar,Siddharth Iyengar,resumes/siddharth_iyengar.md,,
-sneha_kulkarni,Sneha Kulkarni,resumes/sneha_kulkarni.md,,
-sophie_laurent,Sophie Laurent,resumes/sophie_laurent.docx,,
-sven_larsen,Sven Larsen,resumes/sven_larsen.md,,
-tariq_mahmood,Tariq Mahmood,resumes/tariq_mahmood.txt,,
-thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,,
-tomas_herrera,Tomás Herrera,resumes/tomas_herrera.md,,
-tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,,
-vikram_iyer,Vikram Iyer,resumes/vikram_iyer.md,,
-vivek_menon,Vivek Menon,resumes/vivek_menon.txt,,
-william_turner,William Turner,resumes/william_turner.md,,
-yara_nasser,Yara Nasser,resumes/yara_nasser.md,,
-yuki_tanaka,Yuki Tanaka,resumes/yuki_tanaka.txt,,
-zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,,
+aaliyah_johnson,Aaliyah Johnson,resumes/aaliyah_johnson.txt,1,Accessible React library; TypeScript and AI coding fluency unshown.
+adaeze_nwosu,Adaeze Nwosu,resumes/adaeze_nwosu.md,0,ML model work; no React or TypeScript interfaces shown.
+ahmed_karim,Ahmed Karim,resumes/ahmed_karim.md,0,Go backend services; no React interface experience shown.
+aisha_khan,Aisha Khan,resumes/aisha_khan.md,0,Python ML and Flask work; no frontend foundation shown.
+amara_okonkwo,Amara Okonkwo,resumes/amara_okonkwo.md,2,"React/TypeScript shared components with Figma, WCAG fixes and CI tests."
+amina_diallo,Amina Diallo,resumes/amina_diallo.txt,0,Analytics pipelines; no React or interface implementation shown.
+ananya_rao,Ananya Rao,resumes/ananya_rao.md,0,NLP and backend work; no React interfaces shown.
+andile_khumalo,Andile Khumalo,resumes/andile_khumalo.txt,0,Infrastructure operations; no frontend implementation shown.
+anika_bose,Anika Bose,resumes/anika_bose.md,0,Analytics and modeling; no React interface work shown.
+arash_karimi,Arash Karimi,resumes/arash_karimi.md,0,Security reviews and scanners; no React implementation shown.
+arjun_mehta,Arjun Mehta,resumes/arjun_mehta.md,0,Java/Go backend work; no React interface foundation shown.
+ayesha_siddiqui,Ayesha Siddiqui,resumes/ayesha_siddiqui.txt,0,Frontend test automation without React/TypeScript interface development.
+benjamin_carter,Benjamin Carter,resumes/benjamin_carter.md,1,Prior React/TypeScript background; recent hands-on delivery and AI fluency unclear.
+camila_reyes,Camila Reyes,resumes/camila_reyes.md,1,React/TypeScript and performance work; accessible UI craft and AI fluency unclear.
+chloe_martin,Chloe Martin,resumes/chloe_martin.md,1,Recent React/TypeScript component delivery; accessibility and AI fluency unshown.
+clara_jensen,Clara Jensen,resumes/clara_jensen.pdf,0,Python backend work; no React interface experience shown.
+daniel_cohen,Daniel Cohen,resumes/daniel_cohen.md,0,Native Swift UI experience without React/TypeScript web foundations.
+david_okafor,David Okafor,resumes/david_okafor.txt,0,Backend-focused React dashboard work lacks TypeScript and accessible component evidence.
+diego_fernandez,Diego Fernández,resumes/diego_fernandez.txt,0,Data pipeline work; no frontend implementation shown.
+divya_reddy,Divya Reddy,resumes/divya_reddy.md,0,SRE and infrastructure work; no React interface experience shown.
+elif_yildiz,Elif Yildiz,resumes/elif_yildiz.txt,1,Accessible TypeScript/Vue component libraries; React and AI coding experience unshown.
+emily_chen,Emily Chen,resumes/emily_chen.txt,2,Accessible React/TypeScript applications and shared components with HTML/CSS and Figma.
+esther_mwangi,Esther Mwangi,resumes/esther_mwangi.pdf,0,Data science and reporting; no React interfaces shown.
+ethan_walsh,Ethan Walsh,resumes/ethan_walsh.txt,1,React/TypeScript components and Playwright; accessible design work and AI fluency unclear.
+farhan_chowdhury,Farhan Chowdhury,resumes/farhan_chowdhury.txt,0,Backend TypeScript services; no React interface experience shown.
+fatima_zahra,Fatima Zahra,resumes/fatima_zahra.txt,0,Data science and experimentation; no React implementation shown.
+felix_wagner,Felix Wagner,resumes/felix_wagner.docx,0,Infrastructure and CI/CD work; no frontend implementation shown.
+gabriel_costa,Gabriel Costa,resumes/gabriel_costa.txt,1,"React/TypeScript feature delivery; visual craft, accessibility and AI fluency unclear."
+george_mathews,George Mathews,resumes/george_mathews.txt,0,Backend management background; no React interfaces shown.
+grace_liu,Grace Liu,resumes/grace_liu.md,2,"Leads a React/TypeScript design system with Storybook, Figma and adoption guidance."
+hana_sato,Hana Sato,resumes/hana_sato.md,2,Accessible React/TypeScript component library with Figma collaboration and Playwright.
+hannah_brooks,Hannah Brooks,resumes/hannah_brooks.md,0,BI models and dashboards; no React interface implementation shown.
+haruto_kimura,Haruto Kimura,resumes/haruto_kimura.txt,0,Native Swift UI work without React/TypeScript web foundations.
+hyunwoo_choi,Hyun-woo Choi,resumes/hyunwoo_choi.pdf,0,ML model development; no frontend interface work shown.
+ingrid_halvorsen,Ingrid Halvorsen,resumes/ingrid_halvorsen.md,0,C# backend services; no React interface work shown.
+ishaan_kapoor,Ishaan Kapoor,resumes/ishaan_kapoor.txt,0,ML model pipelines; no React interfaces shown.
+ivan_petrov,Ivan Petrov,resumes/ivan_petrov.md,0,Embedded firmware work; no React/TypeScript interfaces shown.
+jakub_novotny,Jakub Novotny,resumes/jakub_novotny.md,0,Streaming data pipelines; no frontend implementation shown.
+jessica_park,Jessica Park,resumes/jessica_park.txt,0,Forecasting and analytics; no React interfaces shown.
+john_doe,John Doe,resumes/john_doe.txt,0,Computer vision and data pipelines; no frontend foundation shown.
+jonas_weber,Jonas Weber,resumes/jonas_weber.md,1,Prior React and current TypeScript/Svelte work; design-system and AI fluency unclear.
+karan_malhotra,Karan Malhotra,resumes/karan_malhotra.txt,0,LLM backend work; no React interface experience shown.
+kenji_watanabe,Kenji Watanabe,resumes/kenji_watanabe.md,1,React Native/TypeScript delivery; HTML/CSS web components and AI fluency unshown.
+kofi_asante,Kofi Asante,resumes/kofi_asante.md,0,Data engineering and warehouses; no React interfaces shown.
+kwame_mensah,Kwame Mensah,resumes/kwame_mensah.txt,1,React/TypeScript dashboards and Jest; accessible component craft and AI fluency unclear.
+lars_johansson,Lars Johansson,resumes/lars_johansson.md,0,Data pipeline work; no React interfaces shown.
+laura_bianchi,Laura Bianchi,resumes/laura_bianchi.docx,0,Native/Flutter mobile work without React/TypeScript web foundations.
+leila_ahmadi,Leila Ahmadi,resumes/leila_ahmadi.md,0,NLP model work; no React interfaces shown.
+li_wei,Li Wei,resumes/li_wei.txt,0,ML platform engineering; no React interface experience shown.
+lucas_moreau,Lucas Moreau,resumes/lucas_moreau.docx,1,Accessible Angular/TypeScript component library; React and AI coding fluency unshown.
+lucia_romano,Lucia Romano,resumes/lucia_romano.md,1,"React, HTML/CSS and Figma delivery; TypeScript and AI coding fluency unshown."
+lukas_becker,Lukas Becker,resumes/lukas_becker.txt,0,Native mobile UI work without React/TypeScript web foundations.
+maria_garcia,Maria Garcia,resumes/maria_garcia.txt,0,Cloud infrastructure work; no React interfaces shown.
+mateo_silva,Mateo Silva,resumes/mateo_silva.md,0,Application security work; no React interface implementation shown.
+meera_pillai,Meera Pillai,resumes/meera_pillai.md,0,ML/RAG pipelines; no frontend interface experience shown.
+mei_lin,Mei Lin,resumes/mei_lin.md,0,Computer vision research; no React interfaces shown.
+mia_schneider,Mia Schneider,resumes/mia_schneider.md,1,"React/TypeScript dashboard delivery; accessibility, reusable UI and AI fluency unclear."
+minh_nguyen,Minh Nguyen,resumes/minh_nguyen.txt,1,React Native/TypeScript experience; HTML/CSS web UI and AI fluency unshown.
+nadia_benali,Nadia Benali,resumes/nadia_benali.md,0,Analytics and churn models; no React interface work shown.
+natalia_popescu,Natalia Popescu,resumes/natalia_popescu.txt,0,Java backend services; no React interface experience shown.
+neha_gupta,Neha Gupta,resumes/neha_gupta.md,0,Product management with no React/TypeScript implementation shown.
+noah_fischer,Noah Fischer,resumes/noah_fischer.docx,1,React/TypeScript full-stack delivery; accessible component work and AI fluency unclear.
+olivia_bennett,Olivia Bennett,resumes/olivia_bennett.txt,0,Analytics and reporting; no frontend implementation shown.
+oluwaseun_adeyemi,Oluwaseun Adeyemi,resumes/oluwaseun_adeyemi.md,0,JVM backend services; no React interfaces shown.
+omar_haddad,Omar Haddad,resumes/omar_haddad.md,0,SRE and platform tooling; no frontend interface work shown.
+oscar_mendes,Oscar Mendes,resumes/oscar_mendes.md,0,Backend services and databases; no React interfaces shown.
+pablo_ruiz,Pablo Ruiz,resumes/pablo_ruiz.md,0,Go/Python backend work; no React interfaces shown.
+patrick_oneill,Patrick O'Neill,resumes/patrick_oneill.txt,1,Some React adoption and Figma collaboration; TypeScript and concrete React depth unclear.
+priya_sharma,Priya Sharma,resumes/priya_sharma.md,0,ML systems and NLP work; no React interfaces shown.
+priyanka_nair,Priyanka Nair,resumes/priyanka_nair.txt,0,Native Android work without React/TypeScript web foundations.
+rahul_verma,Rahul Verma,resumes/rahul_verma.md,0,Data pipelines; no React interface work shown.
+rania_saleh,Rania Saleh,resumes/rania_saleh.md,0,Infrastructure automation; no frontend interfaces shown.
+ravi_shankar,Ravi Shankar,resumes/ravi_shankar.txt,0,Java backend development; no React interface foundation shown.
+rebecca_stone,Rebecca Stone,resumes/rebecca_stone.txt,0,Cloud architecture and infrastructure; no React interface work shown.
+resume_aisha_bello,Aisha Bello,resumes/resume_aisha_bello.docx,0,Product management without React/TypeScript implementation evidence.
+resume_david_kim,David Kim,resumes/resume_david_kim.txt,0,ML serving and pipelines; no React interface work shown.
+resume_elena_rodriguez,Elena Rodriguez,resumes/resume_elena_rodriguez.docx,0,SRE automation; no React interface work shown.
+resume_john_doe,John Doe,resumes/resume_john_doe.pdf,0,Python backend work; no React/TypeScript interface foundation shown.
+resume_john_smith,John Smith,resumes/resume_john_smith.docx,2,Accessible React/TypeScript shared library adopted by six teams with regression tests.
+resume_marcus_chen,Marcus Chen,resumes/resume_marcus_chen.pdf,0,Java backend work; no React interface experience shown.
+resume_priya_sharma,Priya Sharma,resumes/resume_priya_sharma.pdf,0,Forecasting and analytics; no React interface work shown.
+resume_sofia_novak,Sofia Novak,resumes/resume_sofia_novak.txt,0,Native mobile UI work without React/TypeScript web foundations.
+ricardo_alves,Ricardo Alves,resumes/ricardo_alves.txt,0,Analytics and statistical models; no React interfaces shown.
+rohan_desai,Rohan Desai,resumes/rohan_desai.txt,1,React/TypeScript admin UI; reusable accessible components and AI fluency unclear.
+samuel_osei,Samuel Osei,resumes/samuel_osei.md,0,SRE infrastructure work; no React interface experience shown.
+sara_kim,Sara Kim,resumes/sara_kim.txt,0,Statistics and product analytics; no React implementation shown.
+siddharth_iyengar,Siddharth Iyengar,resumes/siddharth_iyengar.md,0,Test automation without React/TypeScript interface development.
+sneha_kulkarni,Sneha Kulkarni,resumes/sneha_kulkarni.md,0,Native Android work without React/TypeScript web foundations.
+sophie_laurent,Sophie Laurent,resumes/sophie_laurent.docx,0,Design-system design and HTML/CSS; no React/TypeScript engineering shown.
+sven_larsen,Sven Larsen,resumes/sven_larsen.md,0,Streaming platforms and warehouses; no React interfaces shown.
+tariq_mahmood,Tariq Mahmood,resumes/tariq_mahmood.txt,0,ML pipelines and backend frameworks; no React interfaces shown.
+thandiwe_dlamini,Thandiwe Dlamini,resumes/thandiwe_dlamini.txt,0,Warehouse modeling; no React interface implementation shown.
+tomas_herrera,Tomás Herrera,resumes/tomas_herrera.md,0,Recommendation models and pipelines; no React interfaces shown.
+tomasz_kowalski,Tomasz Kowalski,resumes/tomasz_kowalski.md,0,One React side project lacks TypeScript and accessible component evidence.
+vikram_iyer,Vikram Iyer,resumes/vikram_iyer.md,0,NLP research and RAG models; no React interfaces shown.
+vivek_menon,Vivek Menon,resumes/vivek_menon.txt,0,JVM backend services; no React interface work shown.
+william_turner,William Turner,resumes/william_turner.md,1,React/TypeScript full-stack features; accessible shared components and AI fluency unclear.
+yara_nasser,Yara Nasser,resumes/yara_nasser.md,0,TypeScript testing without React interface implementation.
+yuki_tanaka,Yuki Tanaka,resumes/yuki_tanaka.txt,0,Figma design systems without React/TypeScript implementation evidence.
+zainab_yusuf,Zainab Yusuf,resumes/zainab_yusuf.txt,0,Infrastructure operations; no React interface experience shown.
