@@ -165,14 +165,16 @@ class FileService:
         return None
 
     # ---- the four Milestone 1 operations ------------------------------------------ #
-    def read_file(self, filepath: str) -> dict:
-        self.calls["read_file"] += 1
+    def read_file(self, filepath: str, *, count: bool = True) -> dict:
+        if count:
+            self.calls["read_file"] += 1
         bad = (self.refuse(filepath, self.cfg.readable_folders) or self._check_extension(filepath)
                or self._check_size(filepath))
         return bad or self._from_m1(fs_tools.read_file(filepath), filepath)
 
-    def list_files(self, directory: str, extension: str | None = None) -> dict:
-        self.calls["list_files"] += 1
+    def list_files(self, directory: str, extension: str | None = None, *, count: bool = True) -> dict:
+        if count:
+            self.calls["list_files"] += 1
         bad = self.refuse(directory, self.cfg.readable_folders, is_dir=True)
         if bad:
             return bad
@@ -181,8 +183,9 @@ class FileService:
             return self.error(classify(entries[0]["error"]), entries[0]["error"], directory)
         return {"success": True, "directory": directory, "count": len(entries), "files": entries}
 
-    def search_in_file(self, filepath: str, keyword: str, whole_word: bool = False) -> dict:
-        self.calls["search_in_file"] += 1
+    def search_in_file(self, filepath: str, keyword: str, whole_word: bool = False, *, count: bool = True) -> dict:
+        if count:
+            self.calls["search_in_file"] += 1
         bad = (self.refuse(filepath, self.cfg.readable_folders) or self._check_extension(filepath)
                or self._check_size(filepath))
         return bad or self._from_m1(fs_tools.search_in_file(filepath, keyword, whole_word), filepath)
@@ -214,8 +217,7 @@ class FileService:
         self.calls["resources/read"] += 1
         if "/" in filename or "\\" in filename:
             raise ResourceError(f"ACCESS_DENIED: '{filename}' must be a file name inside {folder}/")
-        result = self.read_file(f"{folder}/{filename}")
-        self.calls["read_file"] -= 1  # counted as a resource read, not a tool call
+        result = self.read_file(f"{folder}/{filename}", count=False)  # counted as a resource read
         if not result.get("success"):
             raise ResourceError(f"{result['error_code']}: {result['message']}")
         return result["content"]
@@ -408,8 +410,7 @@ def build_server(cfg: ServerConfig | None = None) -> FastMCP:
         if operation == "search" and not (keyword or "").strip():
             return traced("batch_process", args, service.error("INVALID_ARGUMENT", "operation 'search' needs a keyword"))
         if directory is not None:
-            listing = service.list_files(directory)
-            service.calls["list_files"] -= 1
+            listing = service.list_files(directory, count=False)
             if not listing["success"]:
                 return traced("batch_process", args, listing)
             paths = [f["path"] for f in listing["files"] if Path(f["path"]).suffix.lower() in cfg.allowed_extensions]
@@ -424,7 +425,8 @@ def build_server(cfg: ServerConfig | None = None) -> FastMCP:
                 r = service.stat(path)
                 return {"ok": True, **{k: r[k] for k in ("size_bytes", "extension", "modified")}} if r["success"] \
                     else {"ok": False, "error_code": r["error_code"], "message": r["message"]}
-            r = service.read_file(path) if operation == "read" else service.search_in_file(path, keyword)
+            r = service.read_file(path, count=False) if operation == "read" else \
+                service.search_in_file(path, keyword, count=False)  # counted once, as batch_process
             if not r.get("success"):
                 return {"ok": False, "error_code": r["error_code"], "message": r["message"]}
             if operation == "read":

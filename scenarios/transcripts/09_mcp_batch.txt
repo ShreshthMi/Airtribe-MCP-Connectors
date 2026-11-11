@@ -1,0 +1,27 @@
+# Transcript of scenario 09_mcp_batch: python scripts/mcp_tour.py --part batch
+# Raw JSON-RPC 2.0 over stdio with filesystem_mcp_server.py; run on 2026-11-11 (exit code 0). '→' sent, '←' response, '⇠' server notification.
+
+## Handshake: the client offers protocol revision 2025-11-25; the server answers with its name, version and capabilities.
+→ {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "mcp_tour", "version": "1.0"}}}
+← {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listCha ...}
+→ {"jsonrpc": "2.0", "method": "notifications/initialized"}
+
+## batch_process reads all 100 resumes concurrently (4 at a time), sending notifications/progress as each file finishes.
+→ {"jsonrpc": "2.0", "id": 900, "method": "tools/call", "params": {"name": "batch_process", "arguments": {"directory": "resumes", "operation": "read"}, "_meta": {"progressToken": "batch-1"}}}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 1.0, "total": 100.0, "message": "read resumes/aaliyah_johnson.txt"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 2.0, "total": 100.0, "message": "read resumes/adaeze_nwosu.md"}, "jsonrpc": "2.0"}
+⇠ ...
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 25.0, "total": 100.0, "message": "read resumes/ethan_walsh.txt"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 50.0, "total": 100.0, "message": "read resumes/lukas_becker.txt"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 75.0, "total": 100.0, "message": "read resumes/noah_fischer.docx"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 100.0, "total": 100.0, "message": "read resumes/sophie_laurent.docx"}, "jsonrpc": "2.0"}
+← 100 progress notifications; {"total": 100, "ok": 100, "failed": 0, "concurrency": 4, "elapsed_ms": 302.0}
+← results[0] = {"path": "resumes/aaliyah_johnson.txt", "ok": true, "chars": 703, "preview": "Name: Aaliyah Johnson aaliyah.johnson@example.com | Atlanta, GA SUMMARY Frontend engineer with 1 years of experience, ...}
+
+## One bad file never fails the batch: each file gets its own result and error code.
+→ {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "batch_process", "arguments": {"paths": ["resumes/ahmed_karim.md", "resumes/nobody.pdf", "../.env", "job_descriptions/devops_sre.txt"], "operation": ...}
+← {"total": 4, "ok": 2, "failed": 2}
+   resumes/ahmed_karim.md                   2 matches
+   resumes/nobody.pdf                       NOT_FOUND
+   ../.env                                  ACCESS_DENIED
+   job_descriptions/devops_sre.txt          1 matches

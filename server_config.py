@@ -40,7 +40,7 @@ class ServerConfig:
     allowed_extensions: tuple[str, ...] = (".txt", ".md", ".pdf", ".docx", ".json", ".csv")
     max_file_mb: float = 20.0
     batch_max_files: int = 200
-    batch_concurrency: int = 8
+    batch_concurrency: int = 4  # measured: more threads did not help (docs/benchmarks.md)
     batch_preview_chars: int = 160
     watch_debounce_ms: int = 300
     watch_force_polling: bool = False

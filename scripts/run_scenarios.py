@@ -24,12 +24,23 @@ TRANSCRIPTS = SCENARIOS / "transcripts"
 WIDTH = 110  # transcript line width
 
 
+def chat_flags(script: Path) -> list[str]:
+    """Extra chat.py flags from a '# flags: ...' line in the scenario, e.g. --show-mcp --mcp-servers."""
+    for line in script.read_text().splitlines():
+        if line.startswith("# flags:"):
+            return line.removeprefix("# flags:").split()
+    return []
+
+
 def run(script: Path) -> tuple[int, float]:
     started = time.monotonic()
-    result = subprocess.run([sys.executable, "chat.py", "--script", str(script)], cwd=ROOT, capture_output=True,
-                            text=True, env={**os.environ, "COLUMNS": str(WIDTH), "NO_COLOR": "1"})
+    flags = chat_flags(script)
+    result = subprocess.run([sys.executable, "chat.py", "--script", str(script), *flags], cwd=ROOT,
+                            capture_output=True, text=True,
+                            env={**os.environ, "COLUMNS": str(WIDTH), "NO_COLOR": "1"})
     header = (f"# Transcript of {script.relative_to(ROOT)}, run live on {time.strftime('%Y-%m-%d')}\n"
-              f"# (chat.py --script; exit code {result.returncode}, {time.monotonic() - started:.0f}s)\n\n")
+              f"# (chat.py --script {' '.join(flags)}; exit code {result.returncode}, "
+              f"{time.monotonic() - started:.0f}s)\n\n")
     (TRANSCRIPTS / f"{script.stem}.txt").write_text(header + result.stdout + result.stderr)
     return result.returncode, time.monotonic() - started
 

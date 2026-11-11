@@ -1,0 +1,35 @@
+# Transcript of scenario 07_mcp_discovery: python scripts/mcp_tour.py --part discovery
+# Raw JSON-RPC 2.0 over stdio with filesystem_mcp_server.py; run on 2026-11-11 (exit code 0). '→' sent, '←' response, '⇠' server notification.
+
+## Handshake: the client offers protocol revision 2025-11-25; the server answers with its name, version and capabilities.
+→ {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "mcp_tour", "version": "1.0"}}}
+← {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listCha ...}
+→ {"jsonrpc": "2.0", "method": "notifications/initialized"}
+
+## tools/list: the four Milestone 1 tools plus watch_directory, get_watch_events, unwatch_directory and batch_process, each with a JSON Schema for its arguments.
+→ {"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+← list_files(directory, extension?) (read-only)
+← read_file(filepath) (read-only)
+← search_in_file(filepath, keyword, whole_word?) (read-only)
+← write_file(filepath, content)
+← watch_directory(directory?, extensions?)
+← get_watch_events(watch_id, since?) (read-only)
+← unwatch_directory(watch_id)
+← batch_process(paths?, directory?, operation?, keyword?)
+
+## resources/list: every resume, job description and report is also a resource, plus config://server and stats://server.
+→ {"jsonrpc": "2.0", "id": 3, "method": "resources/list"}
+← 132 resources: 100 resume://, 7 jd://, 23 report://, 1 config://, 1 stats://
+← e.g. resume://aaliyah_johnson.txt (text/plain), resume://adaeze_nwosu.md (text/markdown), resume://ahmed_karim.md (text/markdown)
+→ {"jsonrpc": "2.0", "id": 4, "method": "resources/templates/list"}
+← templates: resume://{filename}, jd://{filename}, report://{filename}
+
+## resources/read: a resume by URI (PDFs and DOCX come back as extracted text), and the effective configuration with the layer each value came from.
+→ {"jsonrpc": "2.0", "id": 5, "method": "resources/read", "params": {"uri": "resume://clara_jensen.pdf"}}
+← resume://clara_jensen.pdf text/plain: Clara Jensen clara.jensen@example.com | Copenhagen, Denmark Summary Backend engineer with 5 years of experience, most recently working with Pytho ...}
+→ {"jsonrpc": "2.0", "id": 6, "method": "resources/read", "params": {"uri": "config://server"}}
+← {"root": "Airtribe-MCP-Connectors", "readable_folders": ["resumes", "job_descriptions", "reports"], "writable_folders": ["reports"], "max_file_mb": 20.0, "batch_concurrency": 4, "transport": "stdio"}
+
+## tools/call read_file: a Milestone 1 tool through MCP. The result carries JSON text and the same object as structuredContent; isError is false.
+→ {"jsonrpc": "2.0", "id": 7, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "job_descriptions/backend_engineer.txt"}}}
+← isError=false {"filepath": "job_descriptions/backend_engineer.txt", "content": "Senior Backend Engineer (Payments)\n\nWe need an engineer to build reliable, high-throughput distributed services.\n\nMust have\n ...}

@@ -1,0 +1,25 @@
+# Transcript of scenario 08_mcp_watch: python scripts/mcp_tour.py --part watch
+# Raw JSON-RPC 2.0 over stdio with filesystem_mcp_server.py; run on 2026-11-11 (exit code 0). '→' sent, '←' response, '⇠' server notification.
+
+## Handshake: the client offers protocol revision 2025-11-25; the server answers with its name, version and capabilities.
+→ {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "mcp_tour", "version": "1.0"}}}
+← {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listCha ...}
+→ {"jsonrpc": "2.0", "method": "notifications/initialized"}
+
+## watch_directory starts watching resumes/. Files already there are not reported.
+→ {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "watch_directory", "arguments": {"directory": "resumes"}}}
+← {"watch_id": "w1", "directory": "resumes"}
+
+## A new resume lands in resumes/ (zoe_adeyemi.md). Once its size is stable, the server pushes notifications/resources/list_changed and a log message.
+$ cp demo/incoming/zoe_adeyemi.md resumes/
+⇠ {"method": "notifications/resources/list_changed", "jsonrpc": "2.0"}
+⇠ {"method": "notifications/message", "params": {"level": "info", "logger": "watch_directory", "data": {"event": "new_file", "path": "resumes/zoe_adeyemi.md", "seq": 1, "watch_id": "w1", "resource": "resume://zoe_adeyemi. ...}
+
+## Clients that ignore notifications (or a model) can poll get_watch_events; the new file is now a resource too.
+→ {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "get_watch_events", "arguments": {"watch_id": "w1"}}}
+← [{"seq": 1, "watch_id": "w1", "path": "resumes/zoe_adeyemi.md", "event": "added", "size_bytes": 594, "at": "2026-11-11T14:15:46+00:00"}]
+→ {"jsonrpc": "2.0", "id": 4, "method": "resources/read", "params": {"uri": "resume://zoe_adeyemi.md"}}
+← resume://zoe_adeyemi.md: # Zoe Adeyemi zoe.adeyemi@example.com | Lagos, Nigeria (remote) ## Summary Backend engineer with 7 years of experience building payment services  ...}
+→ {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "unwatch_directory", "arguments": {"watch_id": "w1"}}}
+← {"jsonrpc": "2.0", "id": 5, "result": {"content": [{"type": "text", "text": "{\"success\": true, \"watch_id\": \"w1\", \"stopped\": true}"}], "structuredContent": {"success": true, "watch_id": "w1", "stopped": true}, "i ...}
+$ rm resumes/zoe_adeyemi.md   # tidy up

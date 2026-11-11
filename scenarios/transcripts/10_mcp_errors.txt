@@ -1,0 +1,37 @@
+# Transcript of scenario 10_mcp_errors: python scripts/mcp_tour.py --part errors
+# Raw JSON-RPC 2.0 over stdio with filesystem_mcp_server.py; run on 2026-11-11 (exit code 0). '→' sent, '←' response, '⇠' server notification.
+
+## Handshake: the client offers protocol revision 2025-11-25; the server answers with its name, version and capabilities.
+→ {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-11-25", "capabilities": {}, "clientInfo": {"name": "mcp_tour", "version": "1.0"}}}
+← {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listCha ...}
+→ {"jsonrpc": "2.0", "method": "notifications/initialized"}
+
+## Tool errors are results with isError: true and a stable error_code. Here the model asks for the project's .env; the server refuses, so the API key cannot leak through MCP.
+→ {"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "../.env"}}}
+← isError=true {"error_code": "ACCESS_DENIED", "message": "Access denied: '../.env'. Access is limited to resumes/, job_descriptions/, reports/"}
+→ {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "/etc/passwd"}}}
+← isError=true {"error_code": "ACCESS_DENIED", "message": "Access denied: '/etc/passwd'. Access is limited to resumes/, job_descriptions/, reports/"}
+→ {"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "resumes/nobody.pdf"}}}
+← isError=true {"error_code": "NOT_FOUND", "message": "File not found: 'resumes/nobody.pdf'. Use list_files to see what exists."}
+→ {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "resumes/photo.png"}}}
+← isError=true {"error_code": "UNSUPPORTED_FORMAT", "message": "'resumes/photo.png': .png is not one of .txt, .md, .pdf, .docx, .json, .csv"}
+→ {"jsonrpc": "2.0", "id": 6, "method": "tools/call", "params": {"name": "write_file", "arguments": {"filepath": "reports/ml_hiring_summary.md", "content": "rewritten"}}}
+← isError=true ALREADY_EXISTS
+
+## Protocol errors are JSON-RPC error objects: -32700 parse error, -32600 invalid request (including batch arrays, which MCP removed), -32601 unknown method, -32602 bad params, -32002 unknown resource.
+→ {"jsonrpc": "2.0", "id": 50, "method": 
+← {"jsonrpc": "2.0", "id": null, "error": {"code": -32700, "message": "Parse error", "data": "Expecting value: line 2 column 1 (char 40)"}}
+→ [{"jsonrpc": "2.0", "id": 51, "method": "ping"}, {"jsonrpc": "2.0", "id": 52, "method": "ping"}]
+← {"jsonrpc": "2.0", "id": null, "error": {"code": -32600, "message": "Invalid Request: JSON-RPC batches are not supported by MCP (removed in protocol revision 2025-06-18); send one message per line"}}
+→ {"jsonrpc": "1.0", "id": 53, "method": "ping"}
+← {"jsonrpc": "2.0", "id": 53, "error": {"code": -32600, "message": "Invalid Request: \"jsonrpc\" must be exactly \"2.0\""}}
+→ {"jsonrpc": "2.0", "id": "x-54", "method": "files/delete_everything"}
+← {"jsonrpc": "2.0", "id": "x-54", "error": {"code": -32601, "message": "Method not found: files/delete_everything"}}
+→ {"jsonrpc": "2.0", "id": 55, "method": "tools/call", "params": {"arguments": {}}}
+← {"jsonrpc": "2.0", "id": 55, "error": {"code": -32602, "message": "Invalid request parameters", "data": ""}}
+→ {"jsonrpc": "2.0", "id": 56, "method": "resources/read", "params": {"uri": "resume://nobody.txt"}}
+← {"jsonrpc": "2.0", "id": 56, "error": {"code": -32002, "message": "File not found: 'resumes/nobody.txt'. Use list_files to see what exists.", "data": {"uri": "resume://nobody.txt", "error_code": "NOT_FOUND"}}}
+→ {"jsonrpc": "2.0", "id": 57, "method": "ping"}
+← {"jsonrpc": "2.0", "id": 57, "result": {}}
+→ {"jsonrpc": "2.0", "id": 8, "method": "resources/read", "params": {"uri": "stats://server"}}
+← stats://server calls: {"read_file": 4, "resources/read": 1, "write_file": 1}
