@@ -13,6 +13,8 @@ Segments
   tour         scripts/mcp_tour.py: handshake, discovery and errors in raw JSON-RPC (no API key)
   watch_batch  scripts/mcp_tour.py: watch_directory and batch_process (no API key)
   chat         chat.py --show-mcp --mcp-servers with demo/mcp_demo_script.txt: the live agent (API key)
+  chat_offline the same through scripts/offline_agent_demo.py, a rule-based stand-in for Claude
+               (no API key; used only with --offline-chat, and the video says so)
   tests        the offline test suite
 
 Captions: the tour prints "## " lines, which become captions and are kept off the screen;
@@ -53,6 +55,10 @@ SEGMENTS = {
              "command": [PYTHON, "chat.py", "--show-mcp", "--mcp-servers", "--session",
                          time.strftime("video-%Y%m%d-%H%M%S"),  # a fresh session: a saved one would resume
                          "--script", str(CHAT_SCRIPT), "--pause", "2"]},
+    "chat_offline": {"title": "3. The LangGraph agent through MCP (offline: a rule-based stand-in replaces Claude)",
+                     "command": [PYTHON, "scripts/offline_agent_demo.py", "--show-mcp", "--mcp-servers", "--session",
+                                 time.strftime("video-offline-%Y%m%d-%H%M%S"), "--script", str(CHAT_SCRIPT),
+                                 "--pause", "2"]},
     "tests": {"title": "4. The offline test suite",
               "command": [PYTHON, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--no-header"],
               "caption": "The offline test suite (no API key): JSON-RPC over stdio, every error-table row, watch, "
@@ -124,17 +130,21 @@ def record_segment(name: str) -> None:
 def timeline(name: str) -> tuple[list[tuple[float, str]], list[tuple[float, str]], list[float]]:
     """(chunks, captions, hold points) for one recorded segment."""
     chunks = [(t, s) for t, s in json.loads((SEGMENT_DIR / f"{name}.json").read_text())]
-    if name == "chat":
+    if name.startswith("chat"):
         chunks = shorten_idle(chunks, MAX_IDLE)
         captions = rd.caption_times(chunks, rd.read_script(CHAT_SCRIPT))
+        if name == "chat_offline":
+            captions = [(at, f"Offline run (rule-based stand-in for Claude). {text}") for at, text in captions]
         return chunks, captions, [at for at, _ in captions[1:]]
     if "caption" in SEGMENTS[name]:
         return chunks, [(0.0, SEGMENTS[name]["caption"])], []
     chunks, captions = strip_printed_captions(chunks)
-    return chunks, captions, []
+    return chunks, captions, [at for at, _ in captions[1:]]
 
 
-def render(names: list[str]) -> float:
+def render(names: list[str], tour_hold: float = 3.0, chat_hold: float = CHAT_HOLD) -> float:
+    """Render the segments; each finished step is held on screen for tour_hold (tour segments)
+    or chat_hold (the chat) seconds before the next caption, so it can be read."""
     ffmpeg = shutil.which("ffmpeg") or sys.exit("ffmpeg is needed to render the video.")
     encoder = subprocess.Popen(
         [ffmpeg, "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{rd.WIDTH}x{rd.HEIGHT}", "-r", str(rd.FPS),
@@ -150,7 +160,11 @@ def render(names: list[str]) -> float:
             encoder.stdin.write(frame)
         total += seconds
 
-    hold(rd.draw_card(*TITLE), 9)
+    title, lines = TITLE
+    if "chat_offline" in names:
+        lines = lines[:4] + ["No API key was available for this recording, so in the agent segment a rule-based",
+                             "stand-in (scripts/offline_agent_demo.py) plays Claude's part; everything else is real."]
+    hold(rd.draw_card(title, lines), 9)
     hold(rd.draw_card(*ARCHITECTURE), 13)
     for name in names:
         chunks, captions, pauses = timeline(name)
@@ -162,7 +176,7 @@ def render(names: list[str]) -> float:
             now = frame / rd.FPS
             while pauses and pauses[0] <= now:
                 hold(rd.draw_terminal(screen, captions[caption_index][1] if caption_index >= 0 else "", now / length),
-                     CHAT_HOLD)
+                     chat_hold if name.startswith("chat") else tour_hold)
                 pauses.pop(0)
             while index < len(chunks) and chunks[index][0] <= now:
                 stream.feed(chunks[index][1])
@@ -184,8 +198,12 @@ def main() -> None:
     parser.add_argument("--only", help=f"record just these segments (comma-separated: {', '.join(SEGMENTS)})")
     parser.add_argument("--replay", action="store_true", help="render from demo/segments/*.json without recording")
     parser.add_argument("--skip", default="", help="segments to leave out of the video")
+    parser.add_argument("--tour-hold", type=float, default=3.0, help="seconds each tour step is held on screen")
+    parser.add_argument("--chat-hold", type=float, default=CHAT_HOLD, help="seconds each chat answer is held")
+    parser.add_argument("--offline-chat", action="store_true",
+                        help="use the chat_offline segment (rule-based stand-in) in place of the live chat")
     args = parser.parse_args()
-    skip = {s for s in args.skip.split(",") if s}
+    skip = {s for s in args.skip.split(",") if s} | ({"chat"} if args.offline_chat else {"chat_offline"})
     if args.only:
         for name in args.only.split(","):
             record_segment(name)
@@ -197,7 +215,7 @@ def main() -> None:
     missing = [n for n in names if not (SEGMENT_DIR / f"{n}.json").is_file()]
     if missing:
         sys.exit(f"not recorded yet: {', '.join(missing)} (record with --only {','.join(missing)})")
-    seconds = render(names)
+    seconds = render(names, args.tour_hold, args.chat_hold)
     print(f"wrote {VIDEO.relative_to(ROOT)} ({seconds / 60:.1f} minutes, {VIDEO.stat().st_size / 1e6:.1f} MB)")
 
 

@@ -273,7 +273,7 @@ fetch server against a local web server (with `--allow-private-ips` for that tes
 
 ## Tests and scenarios
 
-`.venv/bin/python -m pytest`: 312 tests, offline, no API key, about half a minute. That is
+`.venv/bin/python -m pytest`: 315 tests, offline, no API key, about half a minute. That is
 Milestone 3's suite plus the MCP tests:
 
 | File | What it checks |
@@ -303,18 +303,35 @@ scenarios 01-06 are unchanged.
 
 ## The demo video
 
-[`demo/mcp_demo.mp4`](demo/mcp_demo.mp4) is rendered by `python scripts/record_mcp_demo.py`
-from terminal sessions recorded under a pseudo-terminal and replayed at their real speed,
-with captions. It is not a screen capture and has no voice-over. It has four segments:
+[`demo/mcp_demo.mp4`](demo/mcp_demo.mp4), 5 minutes 33 seconds, is rendered by
+`python scripts/record_mcp_demo.py` from terminal sessions recorded under a
+pseudo-terminal and replayed at their real speed, with captions. It is not a screen
+capture and has no voice-over. It has four segments:
 
 1. the server in raw JSON-RPC: handshake, discovery and errors;
 2. `watch_directory` catching a new resume, and `batch_process` over 100 resumes;
-3. the agent live through MCP, with a posting fetched by URL;
+3. the agent working through MCP: a posting fetched by URL through the fetch server, three
+   screening rounds over 100 resumes, then a resume search, a `batch_process` and a report
+   write, each shown as an MCP request;
 4. the test suite.
 
-In the live chat, waits longer than 4 seconds with no output are shortened to 4 seconds,
-and the title card says so. The recorded sessions are in `demo/segments/`, and `--replay`
-re-renders them. Milestone 3's video is still at [`demo/demo.mp4`](demo/demo.mp4).
+Each step is held on screen for a few seconds so it can be read.
+
+**The committed video's agent segment is an offline run.** No Anthropic API key was
+available in the session that rendered it, so a rule-based stand-in
+([`scripts/offline_agent_demo.py`](scripts/offline_agent_demo.py), keyword matching, not
+Claude) plays the model's part. Everything else in that segment is real: the graph, both
+MCP server processes, Round 1's search and the report files. The title card and every
+caption in that segment say so, and its recommendations are not meaningful. To render the
+live version, record the chat on a machine with a key and re-render:
+
+```bash
+.venv/bin/python scripts/record_mcp_demo.py --only chat     # live: calls the Anthropic API
+.venv/bin/python scripts/record_mcp_demo.py --replay        # renders with the live chat segment
+```
+
+The recorded sessions are in `demo/segments/`. Milestone 3's video is still at
+[`demo/demo.mp4`](demo/demo.mp4).
 
 ## What the Milestone 3 review asked for
 
@@ -369,7 +386,7 @@ chat.py                    terminal chat: --show-mcp, --session, --watch, --mcp-
 screening.py, claude_tasks.py, llm.py, embedders.py   Milestone 3, unchanged in role
 milestone2_rag/            Milestone 2 (and Milestone 1's tools inside it), vendored verbatim
 docs/                      mcp_architecture.md, state_machine.md, benchmarks.md, walkthrough.md
-scripts/                   mcp_tour.py, bench_mcp.py, record_mcp_demo.py, run_scenarios.py, ...
+scripts/                   mcp_tour.py, bench_mcp.py, record_mcp_demo.py, offline_agent_demo.py, run_scenarios.py, ...
 scenarios/                 chat scenarios 01-06 and 11-12; transcripts 01-10 (and 11-12 when run live)
 demo/                      mcp_demo.mp4 and its segments; Milestone 3's demo.mp4
 tests/                     the pytest suite
