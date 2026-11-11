@@ -28,6 +28,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -49,7 +50,8 @@ SEGMENTS = {
     "watch_batch": {"title": "2. watch_directory() and batch_process()",
                     "command": [PYTHON, "scripts/mcp_tour.py", "--part", "watch,batch", "--pause", "2.2"]},
     "chat": {"title": "3. The LangGraph agent, through MCP, end to end",
-             "command": [PYTHON, "chat.py", "--show-mcp", "--mcp-servers", "--session", "video-demo",
+             "command": [PYTHON, "chat.py", "--show-mcp", "--mcp-servers", "--session",
+                         time.strftime("video-%Y%m%d-%H%M%S"),  # a fresh session: a saved one would resume
                          "--script", str(CHAT_SCRIPT), "--pause", "2"]},
     "tests": {"title": "4. The offline test suite",
               "command": [PYTHON, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--no-header"],
