@@ -28,7 +28,7 @@
 → {"jsonrpc": "2.0", "id": 5, "method": "resources/read", "params": {"uri": "resume://clara_jensen.pdf"}}
 ← resume://clara_jensen.pdf text/plain: Clara Jensen clara.jensen@example.com | Copenhagen, Denmark Summary Backend engineer with 5 years of experience, most recently working with Pytho ...}
 → {"jsonrpc": "2.0", "id": 6, "method": "resources/read", "params": {"uri": "config://server"}}
-← {"root": "Airtribe-MCP-Connectors", "readable_folders": ["resumes", "job_descriptions", "reports"], "writable_folders": ["reports"], "max_file_mb": 20.0, "batch_concurrency": 4, "transport": "stdio"}
+← {"root": "Airtribe-MCP-Connectors", "readable_folders": ["resumes", "job_descriptions", "reports"], "writable_folders": ["reports"], "max_file_mb": 20.0, "batch_concurrency": 2, "transport": "stdio"}
 
 ## tools/call read_file: a Milestone 1 tool through MCP. The result carries JSON text and the same object as structuredContent; isError is false.
 → {"jsonrpc": "2.0", "id": 7, "method": "tools/call", "params": {"name": "read_file", "arguments": {"filepath": "job_descriptions/backend_engineer.txt"}}}

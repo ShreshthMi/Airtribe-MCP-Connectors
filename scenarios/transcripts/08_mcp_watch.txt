@@ -17,7 +17,7 @@ $ cp demo/incoming/zoe_adeyemi.md resumes/
 
 ## Clients that ignore notifications (or a model) can poll get_watch_events; the new file is now a resource too.
 → {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "get_watch_events", "arguments": {"watch_id": "w1"}}}
-← [{"seq": 1, "watch_id": "w1", "path": "resumes/zoe_adeyemi.md", "event": "added", "size_bytes": 594, "at": "2026-11-11T14:15:46+00:00"}]
+← [{"seq": 1, "watch_id": "w1", "path": "resumes/zoe_adeyemi.md", "event": "added", "size_bytes": 594, "at": "2026-11-11T14:41:43+00:00"}]
 → {"jsonrpc": "2.0", "id": 4, "method": "resources/read", "params": {"uri": "resume://zoe_adeyemi.md"}}
 ← resume://zoe_adeyemi.md: # Zoe Adeyemi zoe.adeyemi@example.com | Lagos, Nigeria (remote) ## Summary Backend engineer with 7 years of experience building payment services  ...}
 → {"jsonrpc": "2.0", "id": 5, "method": "tools/call", "params": {"name": "unwatch_directory", "arguments": {"watch_id": "w1"}}}

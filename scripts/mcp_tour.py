@@ -188,7 +188,7 @@ def watch(wire: Wire) -> None:
 
 
 def batch(wire: Wire) -> None:
-    wire.caption("batch_process reads all 100 resumes concurrently (4 at a time), sending "
+    wire.caption("batch_process reads all 100 resumes concurrently (2 at a time), sending "
                  "notifications/progress as each file finishes.")
     message = {"jsonrpc": "2.0", "id": 900, "method": "tools/call", "params": {
         "name": "batch_process", "arguments": {"directory": "resumes", "operation": "read"},

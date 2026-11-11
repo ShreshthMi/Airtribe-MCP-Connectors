@@ -6,16 +6,16 @@
 ← {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2025-11-25", "capabilities": {"experimental": {}, "prompts": {"listChanged": false}, "resources": {"subscribe": false, "listChanged": false}, "tools": {"listCha ...}
 → {"jsonrpc": "2.0", "method": "notifications/initialized"}
 
-## batch_process reads all 100 resumes concurrently (4 at a time), sending notifications/progress as each file finishes.
+## batch_process reads all 100 resumes concurrently (2 at a time), sending notifications/progress as each file finishes.
 → {"jsonrpc": "2.0", "id": 900, "method": "tools/call", "params": {"name": "batch_process", "arguments": {"directory": "resumes", "operation": "read"}, "_meta": {"progressToken": "batch-1"}}}
 ⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 1.0, "total": 100.0, "message": "read resumes/aaliyah_johnson.txt"}, "jsonrpc": "2.0"}
-⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 2.0, "total": 100.0, "message": "read resumes/adaeze_nwosu.md"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 2.0, "total": 100.0, "message": "read resumes/ahmed_karim.md"}, "jsonrpc": "2.0"}
 ⇠ ...
-⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 25.0, "total": 100.0, "message": "read resumes/ethan_walsh.txt"}, "jsonrpc": "2.0"}
-⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 50.0, "total": 100.0, "message": "read resumes/lukas_becker.txt"}, "jsonrpc": "2.0"}
-⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 75.0, "total": 100.0, "message": "read resumes/noah_fischer.docx"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 25.0, "total": 100.0, "message": "read resumes/farhan_chowdhury.txt"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 50.0, "total": 100.0, "message": "read resumes/lucia_romano.md"}, "jsonrpc": "2.0"}
+⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 75.0, "total": 100.0, "message": "read resumes/resume_david_kim.txt"}, "jsonrpc": "2.0"}
 ⇠ {"method": "notifications/progress", "params": {"progressToken": "batch-1", "progress": 100.0, "total": 100.0, "message": "read resumes/sophie_laurent.docx"}, "jsonrpc": "2.0"}
-← 100 progress notifications; {"total": 100, "ok": 100, "failed": 0, "concurrency": 4, "elapsed_ms": 302.0}
+← 100 progress notifications; {"total": 100, "ok": 100, "failed": 0, "concurrency": 2, "elapsed_ms": 263.2}
 ← results[0] = {"path": "resumes/aaliyah_johnson.txt", "ok": true, "chars": 703, "preview": "Name: Aaliyah Johnson aaliyah.johnson@example.com | Atlanta, GA SUMMARY Frontend engineer with 1 years of experience, ...}
 
 ## One bad file never fails the batch: each file gets its own result and error code.

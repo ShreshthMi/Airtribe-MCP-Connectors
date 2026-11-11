@@ -30,7 +30,7 @@ sys.path.insert(0, str(ROOT / "milestone2_rag" / "milestone1_tools"))
 from mcp_client import MCPClient  # noqa: E402
 from server_config import ServerConfig  # noqa: E402
 
-RUNS = 5
+RUNS = 15
 OUT = ROOT / "docs" / "benchmarks.md"
 
 
@@ -100,15 +100,23 @@ def main() -> None:
     med = statistics.median
     sequential = med(levels[1])
     best = min(levels, key=lambda n: med(levels[n]))
-    if med(levels[best]) < 0.9 * sequential:
+
+    def quartiles(times: list[float]) -> tuple[float, float]:
+        q = statistics.quantiles(times, n=4)
+        return q[0], q[2]
+
+    # Claim a difference only when it is bigger than run-to-run variation: the faster level's
+    # upper quartile must sit below sequential's lower quartile.
+    if best != 1 and quartiles(levels[best])[1] < quartiles(levels[1])[0]:
         verdict = (f"Concurrency helps here: {best} workers read the corpus {sequential / med(levels[best]):.1f}x "
-                   "faster than one.")
+                   "faster than one, by more than the run-to-run variation.")
     else:
-        verdict = ("Concurrency does not help on this machine: the files are small and on a local disk, and "
+        verdict = ("No clear gain from concurrency on this machine: the differences between levels are within "
+                   "the run-to-run variation (the last column). The files are small and on a local disk, and "
                    "pypdf and python-docx parse in pure Python under the GIL, so worker threads mostly queue "
-                   "for it. It is kept (and configurable) for slow or remote storage, where reads wait on I/O; "
-                   "that case was not measured here.")
-    rows = "\n".join(f"| {n}{' (default)' if n == ServerConfig.batch_concurrency else ''} | {med(t):.0f} ms | {', '.join(f'{x:.0f}' for x in t)} |"
+                   "for it. Concurrency is kept (and configurable) for slow or remote storage, where reads wait "
+                   "on I/O; that case was not measured here.")
+    rows = "\n".join(f"| {n}{' (default)' if n == ServerConfig.batch_concurrency else ''} | {med(t):.0f} ms | {min(t):.0f}-{max(t):.0f} (middle half {quartiles(t)[0]:.0f}-{quartiles(t)[1]:.0f}) |"
                      for n, t in levels.items())
     machine = (f"{platform.system()} {platform.release()} ({platform.machine()}), {os.cpu_count()} CPUs, "
                f"Python {platform.python_version()}")
@@ -130,7 +138,7 @@ tool call and one compact result (lengths and previews, not {len(paths)} full te
 
 ## batch_process: how many files at once
 
-| batch_concurrency | median server time to read all {len(paths)} resumes | runs (ms) |
+| batch_concurrency | median server time to read all {len(paths)} resumes | range of runs, ms |
 |---|---|---|
 {rows}
 

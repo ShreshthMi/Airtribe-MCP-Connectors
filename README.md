@@ -182,7 +182,7 @@ configuration is published read-only as `config://server`.
 | `readable_folders` / `writable_folders` | `resumes, job_descriptions, reports` / `reports` | the folder policy |
 | `allowed_extensions` | `.txt .md .pdf .docx .json .csv` | what may be read or written |
 | `max_file_mb` | 20 | size limit (Milestone 1's own read limit is the ceiling) |
-| `batch_max_files`, `batch_concurrency`, `batch_preview_chars` | 200, 4, 160 | `batch_process` limits |
+| `batch_max_files`, `batch_concurrency`, `batch_preview_chars` | 200, 2, 160 | `batch_process` limits |
 | `watch_debounce_ms`, `watch_force_polling`, `watch_buffer_size` | 300, false, 500 | `watch_directory` |
 | `transport`, `host`, `port` | stdio, 127.0.0.1, 8765 | `stdio`, `streamable-http` or `sse` |
 | `log_level` | INFO | logs go to stderr only; stdout is the protocol channel |
@@ -201,8 +201,10 @@ configuration is published read-only as `config://server`.
   ([`docs/benchmarks.md`](docs/benchmarks.md), `scripts/bench_mcp.py`): one `batch_process`
   over the 100 resumes took about half the time of 100 separate `read_file` requests. For
   Claude it is one tool call with a compact result, not 100. More worker threads did *not*
-  speed up reading this small, local corpus, because parsing is pure Python under the GIL.
-  The default is therefore 4, kept for slower storage, and the benchmark page says so.
+  speed up reading this small, local corpus, because parsing is pure Python under the GIL:
+  over 15 runs per setting, no setting beat sequential by more than the run-to-run
+  variation, and 8 threads were clearly slower. The default is therefore 2, kept for slower
+  storage, and the benchmark page says so.
 
 ## Part B: the agent, through MCP
 
