@@ -104,3 +104,31 @@ def test_an_oversized_first_message_is_refused_before_anything_runs(monkeypatch,
 
     out = capsys.readouterr().out
     assert "That message is 9,000 characters; the limit is 8,000" in out and "Screening round 1" in out
+
+
+def test_a_session_is_saved_and_resumes_with_its_shortlist_in_a_new_process(monkeypatch, tmp_path, capsys,
+                                                                             use_agent):
+    """Durable state: quit leaves the graph paused in SQLite; a later chat.py --session carries on."""
+    use_agent(ScriptedClaude())
+    first = tmp_path / "first.txt"
+    first.write_text("Find me candidates with React and 3+ years experience\nquit\n")
+    monkeypatch.setattr("sys.argv", ["chat.py", "--script", str(first), "--session", "acme-react"])
+    chat.main()
+    assert "Resume it with: python chat.py --session acme-react" in capsys.readouterr().out
+
+    claude = ScriptedClaude(replies=[reply("Ana Ruiz `ana_ruiz` still leads the shortlist.")])
+    use_agent(claude)  # a fresh agent and graph, as in a new process: only the SQLite file carries over
+    second = tmp_path / "second.txt"
+    second.write_text("Who leads the shortlist?\nquit\n")
+    monkeypatch.setattr("sys.argv", ["chat.py", "--script", str(second), "--session", "acme-react"])
+    chat.main()
+
+    out = capsys.readouterr().out
+    assert "Resuming session acme-react" in out and "React Developer, screening round 1" in out
+    assert "still leads the shortlist." in out  # rendered as Markdown, so without the backticks
+    assert claude.judged == []  # nothing was re-screened: the shortlist came back from the checkpoint
+    assert "ana_ruiz" in claude.conversations[0][-1]["content"][0]["text"]  # the restored screening state
+
+    monkeypatch.setattr("sys.argv", ["chat.py", "--sessions"])
+    chat.main()
+    assert "acme-react" in capsys.readouterr().out

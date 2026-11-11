@@ -87,6 +87,7 @@ class MatchingAgent:
     def __init__(self, claude: Claude | None = None, corpus: Corpus | None = None, today: date | None = None):
         self._claude, self._corpus = claude, corpus
         self.today = today or date.today()
+        self.mcp_observer = None  # called with (method, name, arguments) before each MCP request, e.g. by chat.py
 
     # Created on first use, so drawing the diagram needs neither an API key nor an index.
     @property
@@ -98,7 +99,7 @@ class MatchingAgent:
     @property
     def corpus(self) -> Corpus:
         if self._corpus is None:
-            self._corpus = Corpus()
+            self._corpus = Corpus(on_mcp_call=self.mcp_observer)
         return self._corpus
 
     def close(self) -> None:

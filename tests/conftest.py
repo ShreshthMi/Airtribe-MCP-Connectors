@@ -27,3 +27,9 @@ def data_root(tmp_path):
     (tmp_path / "resumes" / ".hidden.txt").write_text("hidden\n")
     (tmp_path / "secret.txt").write_text("not for clients\n")
     return tmp_path
+
+
+@pytest.fixture(autouse=True)
+def chat_sessions_in_a_temporary_file(tmp_path, monkeypatch):
+    """chat.py saves every conversation; keep the tests' sessions out of the project's .state/."""
+    monkeypatch.setenv("CHAT_STATE_FILE", str(tmp_path / "sessions.sqlite"))
