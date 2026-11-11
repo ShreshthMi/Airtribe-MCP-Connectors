@@ -1,4 +1,6 @@
-# Calibrating Round 2 and Round 3 against human labels (2026-11-11)
+# Calibrating Rounds 1-3 against labellers' grades (2026-11-11)
+
+Labellers A and B are two separate OpenAI Codex sessions (AI models, not people), each given only the labelling pack: blind to the tool's output and to each other's grades. They are independent of the system under test (Claude), but not of each other.
 
 Labels: real_backend: A, B (17 labelled, 17 judged); real_data: A, B (12 labelled, 12 judged); real_frontend: A, B (100 labelled, 10 judged); real_ml: A, B (100 labelled, 10 judged); real_sre: A, B (11 labelled, 11 judged). A candidate's grade is the mean of these labellers' grades; Round 3 is scored on the labelled candidates Claude judged (on a sheet covering every resume, Round 1's top 10).
 

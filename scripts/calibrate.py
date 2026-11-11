@@ -1,5 +1,5 @@
 """
-Calibrate Round 2's fit score and Round 3's hire rule against human labels, as the
+Calibrate Round 2's fit score and Round 3's hire rule against labellers' grades, as the
 Milestone 3 review asked: set them from independent labels rather than by hand.
 
     python scripts/calibrate.py judge                  # once; calls Claude for each labelled candidate
@@ -351,10 +351,11 @@ def _held_out(scores: dict, key: str, describe) -> list[str]:
                         f"{better} of {len(held)} postings, worse on {worse}, the same on {tied}."]
 
 
-def render(labels: dict, ranking: dict, decision: dict, info: dict, today: date) -> str:
+def render(labels: dict, ranking: dict, decision: dict, info: dict, today: date, note: str = "") -> str:
     who = "; ".join(f"{p}: {', '.join(sorted(by))} ({len(info[p]['gains'])} labelled, {len(info[p]['scored'])} judged)"
                     for p, by in labels.items())
-    lines = [f"# Calibrating Round 2 and Round 3 against human labels ({today.isoformat()})", "",
+    lines = [f"# Calibrating Rounds 1-3 against labellers' grades ({today.isoformat()})", "",
+             *([note, ""] if note else []),
              f"Labels: {who}. A candidate's grade is the mean of these labellers' grades; Round 3 is scored on the "
              "labelled candidates Claude judged (on a sheet covering every resume, Round 1's top 10).", "",
              "Agreement between labellers:", *_kappas(labels), "",
@@ -384,14 +385,14 @@ def run_sweep(args) -> str:
     if not labels:
         raise ValueError("No graded sheets from those labellers.")
     ranking, decision, info = score_all(labels)
-    report = render(labels, ranking, decision, info, date.today())
+    report = render(labels, ranking, decision, info, date.today(), args.note)
     args.out.write_text(report)
     return report
 
 
 def main(argv: list[str] | None = None) -> None:
     load_dotenv(ROOT / ".env")
-    parser = argparse.ArgumentParser(description="Calibrate the screening rules against human labels.")
+    parser = argparse.ArgumentParser(description="Calibrate the screening rules against labellers' grades.")
     parser.add_argument("command", choices=["judge", "sweep"])
     parser.add_argument("--labels", type=Path, default=ROOT / "evaluation" / "labels")
     parser.add_argument("--jobs", type=Path, default=ROOT / "job_descriptions")
@@ -399,6 +400,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--postings", nargs="+", default=[], help="judge only these postings")
     parser.add_argument("--labellers", nargs="+", default=[], help="sweep with only these labellers' sheets")
     parser.add_argument("--out", type=Path, default=ROOT / "evaluation" / "calibration.md")
+    parser.add_argument("--note", default="", help="a line under the title, e.g. who the labellers are")
     args = parser.parse_args(argv)
     try:
         if args.command == "judge":

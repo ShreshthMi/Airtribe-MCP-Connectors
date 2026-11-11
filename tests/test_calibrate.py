@@ -150,9 +150,12 @@ def test_the_sweep_reports_both_rounds_held_out_and_labeller_agreement(tmp_path,
     monkeypatch.setattr(calibrate.evaluate, "REQUIREMENTS_DIR", tmp_path)
     out = tmp_path / "calibration.md"
 
-    calibrate.main(["sweep", "--labels", str(tmp_path / "labels"), "--out", str(out)])
+    calibrate.main(["sweep", "--labels", str(tmp_path / "labels"), "--out", str(out),
+                    "--note", "Labeller A is an AI model."])
 
     report = out.read_text()
+    assert "Labeller A is an AI model." in report
+    assert "human labels" not in report
     assert "A vs self: weighted kappa" in report
     assert "**(current)**" in report
     assert report.count("Held out, the rules chosen on the other postings") == 2
