@@ -1,0 +1,926 @@
+{
+  "screening_round": 1,
+  "date": "2026-11-11",
+  "requirements": {
+    "role_title": "Senior Backend Engineer (Payments)",
+    "must_have": [
+      "6+ years of backend development experience",
+      "Java",
+      "Spring Boot",
+      "Microservices",
+      "REST APIs",
+      "Kafka",
+      "Redis",
+      "Kubernetes on AWS"
+    ],
+    "nice_to_have": [
+      "Terraform",
+      "System design experience",
+      "Go"
+    ],
+    "interview_only": [],
+    "notes": "The 6+ years is read as overall backend development experience, not years in any single listed technology. The title mentions Payments, but payments-domain experience is not stated as a requirement, so it is not listed. The description of building reliable, high-throughput distributed services is treated as a description of the role rather than a separate requirement."
+  },
+  "shortlist": [
+    {
+      "rank": 1,
+      "candidate_id": "arjun_mehta",
+      "name": "Arjun Mehta",
+      "resume_path": "resumes/arjun_mehta.md",
+      "rag_score": 97,
+      "fit_score": 97,
+      "recommendation": "hire",
+      "recommendation_reason": "Meets every must-have, with evidence quoted from the resume.",
+      "must_haves_met": "8/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Staff Software Engineer, Razorpay\nApr 2020 - Present",
+          "reasoning": "Razorpay Apr 2020–Nov 2026 (~6.6 yrs) + Thoughtworks Aug 2016–Mar 2020 (~3.6 yrs) + Infosys Jul 2015–Jul 2016 (1 yr) ≈ 11.2 years, exceeding 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Designed payment routing microservices in Java and Spring Boot handling 10k TPS.",
+          "reasoning": "Java is used in the current Razorpay role and at Infosys.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Designed payment routing microservices in Java and Spring Boot handling 10k TPS.",
+          "reasoning": "Spring Boot is used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "met",
+          "evidence": "Designed payment routing microservices in Java and Spring Boot handling 10k TPS.",
+          "reasoning": "The candidate designed microservices at Razorpay.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "met",
+          "evidence": "REST APIs and GraphQL gateways.",
+          "reasoning": "REST APIs were built at Thoughtworks.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Built event-driven systems with Kafka and Redis for banking clients",
+          "reasoning": "Kafka is used in the Thoughtworks role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "met",
+          "evidence": "Built event-driven systems with Kafka and Redis for banking clients",
+          "reasoning": "Redis is used in the Thoughtworks role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "met",
+          "evidence": "Migrated services to Kubernetes on AWS (EKS) with Terraform; led a team of 6.",
+          "reasoning": "The candidate migrated services to EKS in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "met",
+          "evidence": "Migrated services to Kubernetes on AWS (EKS) with Terraform; led a team of 6.",
+          "reasoning": "Terraform is used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Designed payment routing microservices in Java and Spring Boot handling 10k TPS.",
+          "reasoning": "Designing high-throughput payment routing services shows system design experience.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "partial",
+          "evidence": "Backend engineer with 9 years of experience designing high-throughput microservices in Java and Go.",
+          "reasoning": "Go appears only in the summary and skills list, and no job description mentions using it.",
+          "evidence_verified": true
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "candidate_id": "oluwaseun_adeyemi",
+      "name": "Oluwaseun Adeyemi",
+      "resume_path": "resumes/oluwaseun_adeyemi.md",
+      "rag_score": 99,
+      "fit_score": 95,
+      "recommendation": "hire",
+      "recommendation_reason": "Meets every must-have, with evidence quoted from the resume.",
+      "must_haves_met": "8/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Senior Software Engineer, Paystream Africa\nMay 2021 - Present",
+          "reasoning": "Backend roles: Aug 2017-May 2018 (~0.8 yr) + Jun 2018-Apr 2021 (~2.9 yrs) + May 2021-Nov 2026 (~5.5 yrs) = ~9.2 years, which is at least 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Designed Java 17 and Spring Boot microservices for card payments processing 4,000 TPS.",
+          "reasoning": "Java is used across all three roles, including the current one.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Built REST APIs in Java and Spring Boot for mobile banking; PostgreSQL and Redis caching.",
+          "reasoning": "Spring Boot is used in both the current and previous roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "met",
+          "evidence": "Designed Java 17 and Spring Boot microservices for card payments processing 4,000 TPS.",
+          "reasoning": "The candidate designed microservices in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "met",
+          "evidence": "Built REST APIs in Java and Spring Boot for mobile banking",
+          "reasoning": "The candidate built REST APIs at Unity Bank Tech.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Event sourcing with Kafka; Redis for idempotency keys and rate limiting.",
+          "reasoning": "Kafka is used for event sourcing in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "met",
+          "evidence": "Event sourcing with Kafka; Redis for idempotency keys and rate limiting.",
+          "reasoning": "Redis is used in both the current and previous roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "met",
+          "evidence": "Runs services on Kubernetes (EKS) on AWS, provisioned with Terraform.",
+          "reasoning": "The candidate runs services on EKS on AWS in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "met",
+          "evidence": "Runs services on Kubernetes (EKS) on AWS, provisioned with Terraform.",
+          "reasoning": "The candidate provisions infrastructure with Terraform in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Designed Java 17 and Spring Boot microservices for card payments processing 4,000 TPS.",
+          "reasoning": "Designing a high-throughput microservice payment system demonstrates system design in a job.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "The resume does not mention Go anywhere.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "candidate_id": "ravi_shankar",
+      "name": "Ravi Shankar",
+      "resume_path": "resumes/ravi_shankar.txt",
+      "rag_score": 81,
+      "fit_score": 76,
+      "recommendation": "borderline",
+      "recommendation_reason": "Only partly meets must-have: 6+ years of backend development experience; Kubernetes on AWS.",
+      "must_haves_met": "6/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "partial",
+          "evidence": "Java backend developer with 4 years of experience on Spring Boot microservices.",
+          "reasoning": "Aug 2022–Dec 2023 (~1.4 yrs) + Jan 2024–Nov 2026 (~2.8 yrs) ≈ 4.2 years, short of the 6 required.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "REST APIs in Java and Spring Boot; MySQL schema design; Docker-based local environments.",
+          "reasoning": "Java is used in a professional role at Zentech Solutions.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Built Spring Boot microservices for loan disbursement with Kafka events and Redis caching.",
+          "reasoning": "Spring Boot is used in both listed roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "met",
+          "evidence": "Built Spring Boot microservices for loan disbursement with Kafka events and Redis caching.",
+          "reasoning": "The candidate built microservices in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "met",
+          "evidence": "REST APIs in Java and Spring Boot; MySQL schema design; Docker-based local environments.",
+          "reasoning": "The candidate built REST APIs at Zentech Solutions.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Built Spring Boot microservices for loan disbursement with Kafka events and Redis caching.",
+          "reasoning": "Kafka events are used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "met",
+          "evidence": "Built Spring Boot microservices for loan disbursement with Kafka events and Redis caching.",
+          "reasoning": "Redis caching is used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Docker-based local environments.",
+          "reasoning": "Only Docker, a neighbouring container technology, appears; there is no mention of Kubernetes or AWS.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "partial",
+          "evidence": "MySQL schema design",
+          "reasoning": "Database schema design is related, but the resume shows no broader system design experience.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "candidate_id": "resume_marcus_chen",
+      "name": "Marcus Chen",
+      "resume_path": "resumes/resume_marcus_chen.pdf",
+      "rag_score": 67,
+      "fit_score": 71,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: Redis.",
+      "must_haves_met": "6/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Senior Java Developer - Lumen Ridge Bank (2020 - Present)",
+          "reasoning": "Atlas Peak 2017-2020 (3 years) plus Lumen Ridge 2020-Nov 2026 (about 6.9 years) gives about 9.9 years of backend work, which is at least 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Built a Kafka-based payment-event platform in Java 17 and Spring Boot handling 5,000 transactions",
+          "reasoning": "Java is used in both roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Developed policy-management REST services with Spring Boot and Hibernate.",
+          "reasoning": "Spring Boot is used in both jobs.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "met",
+          "evidence": "Java developer with 7 years of experience building reliable microservices for payments and banking.",
+          "reasoning": "Microservices are stated directly, and both roles describe service-based backend work.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "met",
+          "evidence": "Developed policy-management REST services with Spring Boot and Hibernate.",
+          "reasoning": "The Atlas Peak role explicitly involves building REST services.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Built a Kafka-based payment-event platform in Java 17 and Spring Boot handling 5,000 transactions",
+          "reasoning": "He built a Kafka-based platform in his current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Redis is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Java 17, Spring Boot, Spring Cloud, Hibernate/JPA, Apache Kafka, PostgreSQL, Oracle, Docker,\nKubernetes",
+          "reasoning": "Kubernetes appears only in the skills list, with no job usage and no mention of AWS.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "partial",
+          "evidence": "Reduced settlement errors by 40% with idempotent consumers and the outbox pattern.",
+          "reasoning": "Building a 5,000-transactions-per-second platform with architectural patterns suggests design work, but system design is not stated explicitly.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "candidate_id": "george_mathews",
+      "name": "George Mathews",
+      "resume_path": "resumes/george_mathews.txt",
+      "rag_score": 69,
+      "fit_score": 66,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: REST APIs; Redis.",
+      "must_haves_met": "6/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Software Engineer, InfoBridge\nJul 2012 - Dec 2016",
+          "reasoning": "Hands-on backend roles run Jul 2012 to Mar 2021 (4y6m at InfoBridge + 4y3m as Lead), about 8.75 years, which is at least 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Tech lead for the settlement platform in Java and Spring Boot; introduced Kafka-based event streaming.",
+          "reasoning": "Java is used across all roles, including the hands-on lead and engineer positions.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Tech lead for the settlement platform in Java and Spring Boot",
+          "reasoning": "Spring Boot is used in the Lead Software Engineer role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "met",
+          "evidence": "Managed a team of 12 engineers building payment microservices (Java, Spring Boot, Kafka) on AWS and Kubernetes.",
+          "reasoning": "The candidate's current role involves payment microservices, though as a manager rather than hands-on.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "REST APIs are not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "introduced Kafka-based event streaming",
+          "reasoning": "The candidate introduced Kafka event streaming as tech lead.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Redis is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "met",
+          "evidence": "building payment microservices (Java, Spring Boot, Kafka) on AWS and Kubernetes",
+          "reasoning": "The current role involves services on AWS and Kubernetes, though in a managerial capacity.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "partial",
+          "evidence": "Leadership, Java, Spring Boot, Microservices, Kafka, AWS, Kubernetes, System Design, Agile, Hiring",
+          "reasoning": "System Design appears only in the skills list, though the tech lead role for the settlement platform implies some design work.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "candidate_id": "vivek_menon",
+      "name": "Vivek Menon",
+      "resume_path": "resumes/vivek_menon.txt",
+      "rag_score": 65,
+      "fit_score": 58,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: Redis.",
+      "must_haves_met": "3/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Backend Engineer, Willow Insurance\nDec 2019 - May 2023",
+          "reasoning": "Backend roles run from Dec 2019 to Nov 2026 (Present), which is about 6 years 11 months and meets 6+ years.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "partial",
+          "evidence": "Java, Spring Boot, Oracle, Jenkins, Kotlin, Kafka, AWS",
+          "reasoning": "Java appears only in the skills list; the job entries show Kotlin, a neighbouring JVM language.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Mentored 8 engineers and led design reviews for new Spring Boot services.",
+          "reasoning": "Spring Boot work appears in both roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "partial",
+          "evidence": "Mentored 8 engineers and led design reviews for new Spring Boot services.",
+          "reasoning": "Multiple services are mentioned, but microservices architecture is never stated.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "partial",
+          "evidence": "Built and operated Kotlin services handling 120k requests per minute at peak.",
+          "reasoning": "Request-serving services suggest API work, but REST APIs are not named.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Designed the Kafka data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "Kafka was used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "The resume does not mention Redis.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Java, Spring Boot, Oracle, Jenkins, Kotlin, Kafka, AWS",
+          "reasoning": "AWS appears only in the skills list, and Kubernetes is not mentioned.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "The resume does not mention Terraform.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Designed the Kafka data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "The candidate designed data models and led design reviews for new services.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "The resume does not mention Go.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "candidate_id": "ahmed_karim",
+      "name": "Ahmed Karim",
+      "resume_path": "resumes/ahmed_karim.md",
+      "rag_score": 61,
+      "fit_score": 58,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: Java; Spring Boot.",
+      "must_haves_met": "3/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Backend Engineer, Orbitly\nOct 2016 - Sep 2020",
+          "reasoning": "Backend roles run Oct 2016–Sep 2020 (4 years) plus Oct 2020–Nov 2026 (about 6.1 years), roughly 10.1 years, which is at least 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Java is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Spring Boot is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "partial",
+          "evidence": "led design reviews for new Kafka services",
+          "reasoning": "The resume describes building multiple services, but it never explicitly mentions a microservices architecture.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "partial",
+          "evidence": "Built and operated Go services handling 40k requests per minute at peak.",
+          "reasoning": "Request-handling services suggest API work, but REST APIs are not named.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Mentored 6 engineers and led design reviews for new Kafka services.",
+          "reasoning": "Kafka is used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "met",
+          "evidence": "Designed the Redis data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "Redis is used in the Orbitly role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Go, PostgreSQL, Redis, Docker, Kafka, Kubernetes, System Design",
+          "reasoning": "Kubernetes appears only in the skills list and summary, not in any job, and AWS is not mentioned at all.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Introduced System Design for the team's services and documented the runbooks.",
+          "reasoning": "System design work appears in the current role, alongside design reviews in both roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "met",
+          "evidence": "Built and operated Go services handling 40k requests per minute at peak.",
+          "reasoning": "Go is used in the current role.",
+          "evidence_verified": true
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "candidate_id": "natalia_popescu",
+      "name": "Natalia Popescu",
+      "resume_path": "resumes/natalia_popescu.txt",
+      "rag_score": 67,
+      "fit_score": 55,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: Redis.",
+      "must_haves_met": "3/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Backend Engineer, Pinecrest Media\nDec 2018 - Nov 2022",
+          "reasoning": "Dec 2018–Nov 2022 is about 4 years, plus Sep 2024–Nov 2026 is about 2.2 years, for about 6.2 years in total, which meets 6+ years.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Built and operated Java services handling 250k requests per minute at peak.",
+          "reasoning": "Java is used in both backend roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "partial",
+          "evidence": "Java, Spring Boot, PostgreSQL, Docker, Kafka, Kubernetes",
+          "reasoning": "Spring Boot appears only in the skills list and summary, not in any role description.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "partial",
+          "evidence": "Introduced Kubernetes for the team's services and documented the runbooks.",
+          "reasoning": "Multiple services run on Kubernetes, which suggests a service-oriented setup, but microservices are never explicitly mentioned.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "partial",
+          "evidence": "Built and operated Java services handling 75k requests per minute at peak.",
+          "reasoning": "The roles describe request-serving backend services, but REST APIs are not named.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "met",
+          "evidence": "Designed the Kafka data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "Kafka is used hands-on in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Redis is not mentioned anywhere.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Introduced Kubernetes for the team's services and documented the runbooks.",
+          "reasoning": "Kubernetes experience is shown, but there is no mention of AWS.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned anywhere.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "partial",
+          "evidence": "Designed the PostgreSQL data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "The resume shows data model design and high-scale services, but not explicit system architecture design.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned anywhere.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "candidate_id": "tomasz_kowalski",
+      "name": "Tomasz Kowalski",
+      "resume_path": "resumes/tomasz_kowalski.md",
+      "rag_score": 65,
+      "fit_score": 53,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: REST APIs; Redis.",
+      "must_haves_met": "3/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "met",
+          "evidence": "Backend Engineer, Cinder Games\nSep 2019 - Aug 2022",
+          "reasoning": "Sep 2019–Aug 2022 (3 years) plus Sep 2022–Nov 2026 (about 4.2 years) gives about 7.2 years of backend work, which exceeds 6.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "met",
+          "evidence": "Built and operated Java services handling 40k requests per minute at peak.",
+          "reasoning": "Java services were built and operated in both backend roles.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "met",
+          "evidence": "Mentored 4 engineers and led design reviews for new Spring Boot services.",
+          "reasoning": "Spring Boot services are used in the current role.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "partial",
+          "evidence": "led design reviews for new Spring Boot services",
+          "reasoning": "Multiple services are mentioned, but a microservices architecture is never stated explicitly.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "REST APIs are not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "partial",
+          "evidence": "Java, Spring Boot, MySQL, Jenkins, Kafka, Kubernetes",
+          "reasoning": "Kafka appears only in the skills list and summary, not in any job description.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Redis is not mentioned.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Introduced Kubernetes for the team's services and documented the runbooks.",
+          "reasoning": "Kubernetes experience is shown, but there is no mention of AWS.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Terraform is not mentioned.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Designed the MySQL data model for the payments ledger and wrote its migration plan.",
+          "reasoning": "The candidate designed data models and led design reviews for high-scale services.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned.",
+          "evidence_verified": false
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "candidate_id": "rebecca_stone",
+      "name": "Rebecca Stone",
+      "resume_path": "resumes/rebecca_stone.txt",
+      "rag_score": 63,
+      "fit_score": 21,
+      "recommendation": "no_hire",
+      "recommendation_reason": "Misses must-have: Java; Spring Boot; Microservices; REST APIs; Kafka; Redis.",
+      "must_haves_met": "0/8",
+      "verdicts": [
+        {
+          "requirement": "6+ years of backend development experience",
+          "verdict": "partial",
+          "evidence": "Migrated on-premise Linux workloads to AWS; Python automation and Jenkins pipelines.",
+          "reasoning": "Her roles are cloud infrastructure and architecture rather than backend development; the only coding shown is Python automation (Mar 2014 - Jan 2020, about 6 years), which is adjacent rather than backend service work.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Java",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Java is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Spring Boot",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Spring Boot is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Microservices",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "The resume does not mention building or working on microservices.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "REST APIs",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "REST APIs are not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kafka",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Kafka is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Redis",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Redis is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        },
+        {
+          "requirement": "Kubernetes on AWS",
+          "verdict": "partial",
+          "evidence": "Advised clients on Kubernetes adoption and CI/CD standards; pre-sales architecture reviews.",
+          "reasoning": "Kubernetes appears only as advisory work and AWS appears separately, so there is no hands-on evidence of running Kubernetes on AWS.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Terraform",
+          "verdict": "met",
+          "evidence": "Designed multi-account AWS and Azure landing zones with Terraform for banks and insurers.",
+          "reasoning": "She has used Terraform in her current role from Feb 2020 to Present.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "System design experience",
+          "verdict": "met",
+          "evidence": "Designed multi-account AWS and Azure landing zones with Terraform for banks and insurers.",
+          "reasoning": "As Principal Cloud Architect she designs enterprise cloud architectures, and System Design is also listed in her skills.",
+          "evidence_verified": true
+        },
+        {
+          "requirement": "Go",
+          "verdict": "missing",
+          "evidence": "",
+          "reasoning": "Go is not mentioned anywhere in the resume.",
+          "evidence_verified": false
+        }
+      ]
+    }
+  ]
+}

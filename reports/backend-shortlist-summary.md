@@ -1,0 +1,3 @@
+**Senior Backend Engineer (Payments), screening round 1:** 100 resumes ranked, top 10 judged against 8 must-haves and 3 nice-to-haves. Result: 2 hire, 1 borderline, 7 no hire. These recommendations support a human decision and are not final.
+**Hire:** Arjun Mehta `arjun_mehta` (fit 97) and Oluwaseun Adeyemi `oluwaseun_adeyemi` (fit 95) meet all 8 must-haves.
+**Borderline:** Ravi Shankar `ravi_shankar` (fit 76) only partly meets "6+ years backend" and "Kubernetes on AWS". The next closest are no hires: Marcus Chen `resume_marcus_chen` (fit 71, missing Redis) and George Mathews `george_mathews` (fit 66, missing REST APIs and Redis).

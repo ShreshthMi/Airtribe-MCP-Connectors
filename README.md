@@ -273,8 +273,9 @@ fetch server against a local web server (with `--allow-private-ips` for that tes
 
 ## Tests and scenarios
 
-`.venv/bin/python -m pytest`: 315 tests, offline, no API key, about half a minute. That is
-Milestone 3's suite plus the MCP tests:
+`.venv/bin/python -m pytest`: 316 tests, offline, no API key, about half a minute (two of
+them are Linux-only and are skipped on macOS). That is Milestone 3's suite plus the
+MCP tests:
 
 | File | What it checks |
 |---|---|
@@ -293,42 +294,48 @@ Milestone 3's suite plus the MCP tests:
 | 08 watch a new resume | a resume arrives; `list_changed` and a log message are pushed; it becomes a resource | [08](scenarios/transcripts/08_mcp_watch.txt) |
 | 09 batch over 100 resumes | progress notifications; per-file errors in a mixed batch | [09](scenarios/transcripts/09_mcp_batch.txt) |
 | 10 errors | `../.env`, an absolute path, a missing file, an unsupported format, an overwrite; every JSON-RPC error code | [10](scenarios/transcripts/10_mcp_errors.txt) |
-| 11 agent via MCP | a live screening with `--show-mcp`: every file operation visible as an MCP request | [`scenarios/11_agent_via_mcp.txt`](scenarios/11_agent_via_mcp.txt) |
-| 12 multi-MCP | a posting fetched by URL through the fetch server, the report written through the filesystem server | [`scenarios/12_multi_mcp.txt`](scenarios/12_multi_mcp.txt) |
+| 11 agent via MCP | a live screening with `--show-mcp`: every file operation visible as an MCP request | [11](scenarios/transcripts/11_agent_via_mcp.txt) |
+| 12 multi-MCP | a posting fetched by URL through the fetch server, the report written through the filesystem server | [12](scenarios/transcripts/12_multi_mcp.txt) |
 
 Scenarios 07-10 come from `python scripts/mcp_tour.py --transcripts` (raw JSON-RPC, no
-key). Scenarios 11-12 are chat scripts for `python scripts/run_scenarios.py 11_agent_via_mcp
-12_multi_mcp`, which runs them against the real model and needs an API key. Milestone 3's
-scenarios 01-06 are unchanged.
+key). Scenarios 11-12 were run live against the real model on 11 November 2026 with
+`python scripts/run_scenarios.py 11_agent_via_mcp 12_multi_mcp`, which needs an API key;
+their chat scripts are [`scenarios/11_agent_via_mcp.txt`](scenarios/11_agent_via_mcp.txt)
+and [`scenarios/12_multi_mcp.txt`](scenarios/12_multi_mcp.txt). Milestone 3's scenarios
+01-06 are unchanged.
 
 ## The demo video
 
-[`demo/mcp_demo.mp4`](demo/mcp_demo.mp4), 5 minutes 33 seconds, is rendered by
+[`demo/mcp_demo.mp4`](demo/mcp_demo.mp4), 5 minutes 27 seconds, is rendered by
 `python scripts/record_mcp_demo.py` from terminal sessions recorded under a
 pseudo-terminal and replayed at their real speed, with captions. It is not a screen
 capture and has no voice-over. It has four segments:
 
 1. the server in raw JSON-RPC: handshake, discovery and errors;
 2. `watch_directory` catching a new resume, and `batch_process` over 100 resumes;
-3. the agent working through MCP: a posting fetched by URL through the fetch server, three
-   screening rounds over 100 resumes, then a resume search, a `batch_process` and a report
-   write, each shown as an MCP request;
+3. the agent working through MCP with the real Claude model: a posting fetched by URL
+   through the fetch server, three screening rounds over 100 resumes, then a resume search,
+   a `batch_process` and a report write, each shown as an MCP request;
 4. the test suite.
 
-Each step is held on screen for a few seconds so it can be read.
-
-**The committed video's agent segment is an offline run.** No Anthropic API key was
-available in the session that rendered it, so a rule-based stand-in
-([`scripts/offline_agent_demo.py`](scripts/offline_agent_demo.py), keyword matching, not
-Claude) plays the model's part. Everything else in that segment is real: the graph, both
-MCP server processes, Round 1's search and the report files. The title card and every
-caption in that segment say so, and its recommendations are not meaningful. To render the
-live version, record the chat on a machine with a key and re-render:
+**Segment 3 is a live run.** It was recorded on 11 November 2026 with the Anthropic API
+(`claude-opus-5-5`): Claude extracts the requirements, judges the shortlist and chooses the
+tools in the follow-up turns, and every file it touches goes through the filesystem MCP
+server. In that segment any wait over 4 s with no output (the model working) is shortened to
+4 s, as the title card says; nothing is cut or reordered beyond that. Segments 1, 2 and 4
+are unchanged from the earlier recording (segment 4 was recorded when the suite had 312
+tests). Each tour step is held on screen for 5 seconds
+and each chat answer for 15, so they can be read. To re-record the chat and re-render:
 
 ```bash
 .venv/bin/python scripts/record_mcp_demo.py --only chat     # live: calls the Anthropic API
-.venv/bin/python scripts/record_mcp_demo.py --replay        # renders with the live chat segment
+.venv/bin/python scripts/record_mcp_demo.py --replay --tour-hold 5 --chat-hold 15
 ```
+
+Without a key, a rule-based stand-in
+([`scripts/offline_agent_demo.py`](scripts/offline_agent_demo.py), keyword matching, not
+Claude) can play the model's part: record it with `--only chat_offline` and render with
+`--replay --offline-chat`. The title card and its captions then say so.
 
 The recorded sessions are in `demo/segments/`. Milestone 3's video is still at
 [`demo/demo.mp4`](demo/demo.mp4).
