@@ -1,14 +1,16 @@
 """
-The resume corpus, seen through the two earlier milestones.
+The resume corpus, seen through the earlier milestones.
 
-* Milestone 1's file tools - read_file, list_files, search_in_file, write_file - read and
-  write files inside a sandbox folder, refusing '..', absolute paths and hidden files.
+* Milestone 1's file tools - read_file, list_files, search_in_file, write_file - are now
+  reached only through the filesystem MCP server (filesystem_mcp_server.py), which this
+  class starts as a child process and talks to over stdio with mcp_client.MCPClient. The
+  server owns the sandbox and the folder policy: read resumes/, job_descriptions/ and
+  reports/; write only new files into reports/.
 * Milestone 2's hybrid RAG search (JobMatcher) ranks every resume against a query using
-  embeddings in ChromaDB, BM25 and exact skill matching.
+  embeddings in ChromaDB, BM25 and exact skill matching. It is unchanged.
 
-Both are vendored unchanged in milestone2_rag/ (see its PROVENANCE.md). This file is the
-only one that imports them, and it narrows the file tools further: the agent may read
-resumes, job descriptions and reports, and may write only into reports/.
+The four file methods keep Milestone 3's return shapes ({"success", "content", "error"} and
+a list of entries), so the agent code that calls them did not change.
 
 Round 1 can use any embedding provider in embedders.py. EMBEDDING_PROVIDER in .env picks
 which index is opened (chroma_db for Milestone 2's MiniLM, chroma_db_<provider> for the
@@ -22,33 +24,27 @@ import sys
 import threading
 from collections import Counter
 from pathlib import Path, PurePosixPath
+from typing import Callable
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 MILESTONE2_DIR = PROJECT_ROOT / "milestone2_rag"
-READABLE_FOLDERS = ("resumes", "job_descriptions", "reports")
-WRITABLE_FOLDER = "reports"
 ROUND1_SIZE = 10
 
 # The vendored modules import each other by top-level name (`from resume_rag import ...`),
 # so their folders go on sys.path instead of being edited into a package.
 sys.path.insert(0, str(MILESTONE2_DIR))
 import job_matcher  # noqa: E402
-import resume_loader  # noqa: E402
 import resume_rag  # noqa: E402
 from job_matcher import JobMatcher, parse_requirement  # noqa: E402
 from resume_rag import extract_skills  # noqa: E402
 
-sys.path.insert(0, str(resume_loader.tools_dir()))
-import fs_tools  # noqa: E402
-
 import embedders  # noqa: E402
+from mcp_client import MCPClient, MCPClientError  # noqa: E402
 
 embedders.install(resume_rag, job_matcher)  # Milestone 2 now builds its embedder through embedders.py
 MILESTONE2_BAND = (job_matcher.SIM_FLOOR, job_matcher.SIM_CEIL)  # hand-set for MiniLM in Milestone 2
-
-# Milestone 1 reads its sandbox folder from a process-wide environment variable, which
-# sandbox_root() sets and restores. Round 2 runs in threads, so every use takes this lock.
-_SANDBOX = threading.Lock()
+# The tools Toolbox wraps itself (to mark file text as data); every other server tool is passed through.
+MILESTONE1_TOOLS = ("list_files", "read_file", "search_in_file", "write_file")
 
 
 class CorpusError(Exception):
@@ -67,8 +63,11 @@ def provider_from_env() -> str:
 
 
 class Corpus:
-    def __init__(self, root: Path = PROJECT_ROOT, db_path: Path | None = None):
+    def __init__(self, root: Path = PROJECT_ROOT, db_path: Path | None = None, mcp: MCPClient | None = None,
+                 on_mcp_call: Callable[[str, str, dict], None] | None = None):
         self.root = Path(root)
+        self._mcp, self._on_mcp_call = mcp, on_mcp_call
+        self._mcp_lock = threading.Lock()
         self.db_path = Path(db_path) if db_path else index_dir(provider_from_env(), self.root)
         registry_file = self.db_path / "candidates.json"
         if not registry_file.is_file():
@@ -153,52 +152,64 @@ class Corpus:
                  "experience_years": m["experience_years"], "matched_skills": m["matched_skills"],
                  "rule_check_failures": m["failed_requirements"]} for m in result["top_matches"]]
 
-    # ---- Milestone 1: file tools ------------------------------------------ #
-    def read_file(self, filepath: str) -> dict:
-        refused = self._refuse(filepath, READABLE_FOLDERS)
-        if refused:
-            return refused
-        with _SANDBOX, resume_loader.sandbox_root(self.root):
-            return fs_tools.read_file(filepath)
+    # ---- Milestone 1 file tools, through the MCP server ---------------------- #
+    @property
+    def mcp(self) -> MCPClient:
+        """The filesystem MCP server's client, started on first use (Round 2 calls from threads)."""
+        with self._mcp_lock:
+            if self._mcp is None:
+                try:
+                    self._mcp = MCPClient.filesystem(self.root, on_call=self._on_mcp_call)
+                except MCPClientError as exc:
+                    raise CorpusError(str(exc)) from exc
+            return self._mcp
 
-    def list_files(self, directory: str, extension: str | None = None) -> list[dict]:
-        refused = self._refuse(f"{directory.rstrip('/')}/x", READABLE_FOLDERS)
-        if refused:
-            return [{"error": refused["error"]}]
-        with _SANDBOX, resume_loader.sandbox_root(self.root):
-            return fs_tools.list_files(directory, extension or None)
-
-    def search_in_file(self, filepath: str, keyword: str) -> dict:
-        refused = self._refuse(filepath, READABLE_FOLDERS)
-        if refused:
-            return refused
-        with _SANDBOX, resume_loader.sandbox_root(self.root):
-            return fs_tools.search_in_file(filepath, keyword)
-
-    def write_file(self, filepath: str, content: str) -> dict:
-        """Save a new file into reports/. Existing files are never replaced, so neither a tool
-        call nor a later session can rewrite a screening report after the fact."""
-        refused = self._refuse(filepath, (WRITABLE_FOLDER,))
-        if refused:
-            return refused
-        if self.exists(filepath):
-            return {"success": False, "filepath": filepath, "error": f"{filepath} already exists; choose a new name"}
-        (self.root / WRITABLE_FOLDER).mkdir(exist_ok=True)
-        with _SANDBOX, resume_loader.sandbox_root(self.root):
-            return fs_tools.write_file(filepath, content)
-
-    def exists(self, filepath: str) -> bool:
-        return self._refuse(filepath, READABLE_FOLDERS) is None and (self.root / filepath).is_file()
+    def _call(self, tool: str, args: dict) -> tuple[bool, dict]:
+        try:
+            return self.mcp.call_tool(tool, args)
+        except MCPClientError as exc:
+            raise CorpusError(str(exc)) from exc
 
     @staticmethod
-    def _refuse(filepath: str, folders: tuple[str, ...]) -> dict | None:
-        """An error result unless `filepath` is inside one of `folders`.
+    def _as_m1(failed: bool, data: dict, filepath: str) -> dict:
+        """Milestone 1's result shape, which the agent code expects, from an MCP tool result."""
+        if not failed:
+            return data
+        return {"success": False, "filepath": data.get("filepath") or filepath, "error_code": data.get("error_code"),
+                "error": data.get("message") or data.get("text") or "the MCP server reported an error"}
 
-        Milestone 1 still enforces its own sandbox ('..', symlinks, hidden files); this
-        only keeps the agent away from the project's code and configuration.
-        """
-        parts = PurePosixPath(str(filepath).replace("\\", "/")).parts
-        if len(parts) >= 2 and parts[0] in folders and ".." not in parts:
-            return None
-        allowed = ", ".join(f"{f}/" for f in folders)
-        return {"success": False, "filepath": str(filepath), "error": f"Access is limited to {allowed}"}
+    def read_file(self, filepath: str) -> dict:
+        return self._as_m1(*self._call("read_file", {"filepath": filepath}), filepath)
+
+    def list_files(self, directory: str, extension: str | None = None) -> list[dict]:
+        failed, data = self._call("list_files", {"directory": directory, "extension": extension or None})
+        return [{"error": self._as_m1(failed, data, directory)["error"]}] if failed else data["files"]
+
+    def search_in_file(self, filepath: str, keyword: str, whole_word: bool = False) -> dict:
+        return self._as_m1(*self._call("search_in_file", {"filepath": filepath, "keyword": keyword,
+                                                          "whole_word": whole_word}), filepath)
+
+    def write_file(self, filepath: str, content: str) -> dict:
+        """Save a new file into reports/. The server never replaces an existing file, so neither a
+        tool call nor a later session can rewrite a screening report after the fact."""
+        return self._as_m1(*self._call("write_file", {"filepath": filepath, "content": content}), filepath)
+
+    def exists(self, filepath: str) -> bool:
+        parent = str(PurePosixPath(str(filepath)).parent)
+        entries = self.list_files(parent) if parent not in (".", "") else []
+        return any(e.get("path") == filepath for e in entries)
+
+    # ---- every other tool the MCP server offers ----------------------------- #
+    def mcp_tools(self) -> list[dict]:
+        """The server's tools (from tools/list) as Anthropic tool schemas."""
+        try:
+            return self.mcp.list_tools()
+        except MCPClientError as exc:
+            raise CorpusError(str(exc)) from exc
+
+    def call_mcp_tool(self, name: str, args: dict) -> tuple[bool, dict]:
+        return self._call(name, args)
+
+    def close(self) -> None:
+        if self._mcp is not None:
+            self._mcp.close()

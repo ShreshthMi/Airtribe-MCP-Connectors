@@ -38,7 +38,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
 import claude_tasks
-from agent_tools import SYSTEM_PROMPT, TOOLS, Toolbox, brief_args, state_snapshot
+from agent_tools import SYSTEM_PROMPT, Toolbox, brief_args, state_snapshot, tools_for
 from corpus import ROUND1_SIZE, Corpus
 from llm import Claude, LLMError
 from screening import (LABEL, current_verdicts, describe_change, interview_checks, rank_by_fit, ranking_changes,
@@ -101,6 +101,11 @@ class MatchingAgent:
             self._corpus = Corpus()
         return self._corpus
 
+    def close(self) -> None:
+        """Stop the MCP server the corpus started, if any."""
+        if self._corpus is not None and hasattr(self._corpus, "close"):
+            self._corpus.close()
+
     def build(self, checkpointer=None):
         graph = StateGraph(ScreeningState)
         graph.add_node("parse_jd", self.parse_jd)
@@ -124,7 +129,7 @@ class MatchingAgent:
 
     # ---- Parse JD -------------------------------------------------------------- #
     def parse_jd(self, state: ScreeningState) -> dict:
-        """Get the job description text: pasted, or read from a file with Milestone 1's read_file."""
+        """Get the job description text: pasted, or read from a file with read_file on the MCP server."""
         text = (state.get("jd_input") or "").strip()
         if "\n" not in text and text.lower().endswith(DOCUMENT_SUFFIXES):
             result = self.corpus.read_file(text)
@@ -283,9 +288,10 @@ class MatchingAgent:
         """Claude answers the user's message, calling tools as it needs them."""
         toolbox = Toolbox(self.corpus, self.claude, state, self.today)
         messages = _history_for_claude(state["messages"], state_snapshot(state))
+        tools = tools_for(self.corpus)  # the file tools' schemas come from the MCP server's tools/list
         reply = ""
         for _ in range(MAX_TOOL_ROUNDS):
-            response = self.claude.converse(system=SYSTEM_PROMPT, messages=messages, tools=TOOLS)
+            response = self.claude.converse(system=SYSTEM_PROMPT, messages=messages, tools=tools)
             # Append the whole response, thinking blocks included: the API needs them back
             # unchanged for the rest of this tool loop.
             messages.append({"role": "assistant", "content": response.content})

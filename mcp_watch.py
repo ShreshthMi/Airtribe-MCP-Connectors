@@ -3,7 +3,8 @@ watch_directory(): tell MCP clients when a new resume lands in a watched folder.
 
 Each watch runs watchfiles.awatch in a background task. A new file is announced once:
   * it is not hidden, not an Office lock file (~$...) and has an allowed extension;
-  * its size is the same across two checks, because PDF and DOCX writes are not atomic;
+  * its size is non-zero and the same across two checks, because PDF and DOCX writes are not
+    atomic (a file still being written is re-checked on a timer, not only on the next event);
   * it has not been announced before (files present when the watch starts never are).
 
 Every announcement gets an increasing sequence number and goes into a bounded ring
@@ -27,6 +28,8 @@ from watchfiles import Change, awatch
 
 log = logging.getLogger("mcp_fs.watch")
 STABLE_CHECK_SECONDS = 0.2
+SETTLE_RETRY_SECONDS = 0.3
+SETTLE_ATTEMPTS = 40  # about 20 s for a file to finish being written before it is given up on
 
 
 @dataclass(frozen=True)
@@ -58,7 +61,7 @@ class WatchManager:
         seen = {p.name for p in path.iterdir() if p.is_file()} if path.is_dir() else set()
         stop = asyncio.Event()
         watch = {"watch_id": watch_id, "directory": folder, "extensions": list(exts), "stop": stop,
-                 "seen": seen, "session": session, "started_at": _now()}
+                 "seen": seen, "pending": set(), "settling": set(), "session": session, "started_at": _now()}
         watch["task"] = asyncio.get_running_loop().create_task(self._run(watch, path))
         self._watches[watch_id] = watch
         log.info("watch_directory %s started on %s/ (%d existing files ignored)", watch_id, folder, len(seen))
@@ -69,11 +72,12 @@ class WatchManager:
         if watch is None:
             return False
         watch["stop"].set()
-        watch["task"].cancel()
-        try:
-            await watch["task"]
-        except (asyncio.CancelledError, Exception):  # noqa: BLE001 - the watcher is going away either way
-            pass
+        for task in (watch["task"], *watch["settling"]):
+            task.cancel()
+            try:
+                await task
+            except (asyncio.CancelledError, Exception):  # noqa: BLE001 - the watcher is going away either way
+                pass
         log.info("watch_directory %s stopped", watch_id)
         return True
 
@@ -108,24 +112,40 @@ class WatchManager:
                                         force_polling=self.force_polling, poll_delay_ms=100, recursive=False):
                 for change, raw in sorted(changes, key=lambda c: c[1]):
                     name = Path(raw).name
-                    if change == Change.deleted or name in watch["seen"] or not self._accept(name, watch["extensions"]):
+                    if change == Change.deleted or name in watch["seen"] or name in watch["pending"] \
+                            or not self._accept(name, watch["extensions"]):
                         continue
-                    size = await _stable_size(Path(raw))
-                    if size is None:
-                        continue  # still being written; a later change event will bring it back
-                    watch["seen"].add(name)
-                    event = WatchEvent(next(self._seq), watch["watch_id"], f"{watch['directory']}/{name}", "added",
-                                       size, _now())
-                    self.events.append(event)
-                    log.info("watch_directory %s: new file %s (%d bytes)", event.watch_id, event.path, size)
-                    try:
-                        await self.on_new(event, watch["session"])
-                    except Exception as exc:  # noqa: BLE001 - a closed client must not kill the watcher
-                        log.warning("could not notify the client about %s: %s", event.path, exc)
+                    watch["pending"].add(name)
+                    task = asyncio.get_running_loop().create_task(self._settle(watch, Path(raw)))
+                    watch["settling"].add(task)
+                    task.add_done_callback(watch["settling"].discard)
         except asyncio.CancelledError:
             raise
         except Exception as exc:  # noqa: BLE001
             log.error("watch %s failed: %s", watch["watch_id"], exc)
+
+    async def _settle(self, watch: dict, path: Path) -> None:
+        """Announce `path` once it has finished being written (or give up after SETTLE_ATTEMPTS)."""
+        name = path.name
+        try:
+            for _ in range(SETTLE_ATTEMPTS):
+                size = await _stable_size(path)
+                if size is not None:
+                    break
+                await asyncio.sleep(SETTLE_RETRY_SECONDS)
+            else:
+                log.warning("watch %s: %s never settled; not announced", watch["watch_id"], name)
+                return
+        finally:
+            watch["pending"].discard(name)
+        watch["seen"].add(name)
+        event = WatchEvent(next(self._seq), watch["watch_id"], f"{watch['directory']}/{name}", "added", size, _now())
+        self.events.append(event)
+        log.info("watch_directory %s: new file %s (%d bytes)", event.watch_id, event.path, size)
+        try:
+            await self.on_new(event, watch["session"])
+        except Exception as exc:  # noqa: BLE001 - a closed client must not kill the watcher
+            log.warning("could not notify the client about %s: %s", event.path, exc)
 
 
 async def _stable_size(path: Path) -> int | None:

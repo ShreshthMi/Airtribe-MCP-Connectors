@@ -53,10 +53,26 @@ BG, FG, CAPTION_BG = (13, 17, 23), (201, 209, 217), (33, 38, 45)
 COLOURS = {"default": FG, "white": (255, 255, 255), "green": (63, 185, 80), "blue": (88, 166, 255),
            "cyan": (57, 197, 187), "yellow": (210, 153, 34), "red": (248, 81, 73),
            "magenta": (188, 140, 255), "black": (110, 118, 129), "brightblack": (110, 118, 129)}
-MONO = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 22)
-MONO_BOLD = ImageFont.truetype("/System/Library/Fonts/Menlo.ttc", 22, index=1)
-SANS = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 30)
-SANS_BIG = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttc", 64)
+# macOS fonts first (where the Milestone 3 video was made), then their Linux counterparts.
+FONT_CHOICES = {
+    "mono": [("/System/Library/Fonts/Menlo.ttc", 0), ("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 0)],
+    "mono_bold": [("/System/Library/Fonts/Menlo.ttc", 1),
+                  ("/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 0)],
+    "sans": [("/System/Library/Fonts/Helvetica.ttc", 0), ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 0)],
+}
+
+
+def font(kind: str, size: int) -> ImageFont.FreeTypeFont:
+    for path, index in FONT_CHOICES[kind]:
+        if Path(path).is_file():
+            return ImageFont.truetype(path, size, index=index)
+    raise SystemExit(f"No {kind} font found; tried {[p for p, _ in FONT_CHOICES[kind]]}")
+
+
+MONO = font("mono", 22)
+MONO_BOLD = font("mono_bold", 22)
+SANS = font("sans", 30)
+SANS_BIG = font("sans", 64)
 CELL_W = MONO.getlength("M")  # measured, so columns line up with the emulator's grid
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 

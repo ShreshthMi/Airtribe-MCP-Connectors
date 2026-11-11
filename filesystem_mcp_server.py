@@ -483,6 +483,7 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(2)
     logging.basicConfig(stream=sys.stderr, level=cfg.log_level,
                         format="%(asctime)s %(name)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+    logging.getLogger("mcp.server.lowlevel.server").setLevel(logging.WARNING)  # one line per request otherwise
     log.info("starting %s on %s (root %s/, %d files)", SERVER_NAME, cfg.transport, cfg.root.name,
              len(FileService(cfg).data_files()))
     t0 = time.perf_counter()
