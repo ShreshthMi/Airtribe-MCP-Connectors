@@ -72,11 +72,13 @@ def test_a_screening_through_mcp_gives_the_same_result_as_milestone3(corpus, tmp
 def test_every_file_operation_the_agent_made_reached_the_server(corpus):
     screen(corpus, ScriptedClaude())
 
+    sent = dict(corpus.mcp.calls)
     served = json.loads(corpus.mcp.read_resource("stats://server"))["calls"]
-    sent = corpus.mcp.calls
-    assert served["read_file"] == sent["tools/call read_file"] >= 10  # Round 2 read the 10 resumes it judged
+    # The graph reads resumes as resources (application data): Round 2 judged 10, suggestions re-read some
+    assert served["resources/read"] == sent["resources/read"] >= 10
     assert served["write_file"] == sent["tools/call write_file"] == 2  # the Markdown and JSON reports
     assert served["list_files"] == sent["tools/call list_files"] >= 1  # checking report names are free
+    assert "read_file" not in served  # no file was read any other way
 
 
 def test_claude_is_offered_the_servers_tools_and_can_use_one_the_agent_has_no_code_for(corpus, tmp_path):

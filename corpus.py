@@ -39,6 +39,7 @@ from job_matcher import JobMatcher, parse_requirement  # noqa: E402
 from resume_rag import extract_skills  # noqa: E402
 
 import embedders  # noqa: E402
+from mcp.shared.exceptions import McpError  # noqa: E402
 from mcp_client import MCPClient, MCPClientError  # noqa: E402
 
 embedders.install(resume_rag, job_matcher)  # Milestone 2 now builds its embedder through embedders.py
@@ -115,10 +116,24 @@ class Corpus:
         return exact or [cid for cid, c in self.candidates.items() if wanted in c["candidate_name"].lower()]
 
     def resume_text(self, candidate_id: str) -> str:
-        result = self.read_file(self.candidates[candidate_id]["resume_path"])
-        if not result.get("success"):
-            raise CorpusError(f"Could not read the resume for {candidate_id}: {result.get('error')}")
-        return result["content"]
+        """A resume's text, for the graph's own use (Round 2 judging, suggestions, interview questions).
+
+        MCP splits access in two: tools are what the model chooses to call, resources are data the
+        application reads. Claude opens files with the tools; the graph reads resumes as resources
+        (resources/read resume://<file>), falling back to read_file for a path outside resumes/.
+        """
+        path = PurePosixPath(self.candidates[candidate_id]["resume_path"])
+        if len(path.parts) != 2 or path.parts[0] != "resumes":
+            result = self.read_file(str(path))
+            if not result.get("success"):
+                raise CorpusError(f"Could not read the resume for {candidate_id}: {result.get('error')}")
+            return result["content"]
+        try:
+            return self.mcp.read_resource(f"resume://{path.name}")
+        except McpError as exc:
+            raise CorpusError(f"Could not read the resume for {candidate_id}: {exc.error.message}") from exc
+        except MCPClientError as exc:
+            raise CorpusError(str(exc)) from exc
 
     # ---- Milestone 2: RAG search (Round 1) --------------------------------- #
     @property
