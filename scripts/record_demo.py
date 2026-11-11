@@ -17,6 +17,7 @@ Adapted from Milestone 2's scripts/record_terminal_session.py. Needs pyte, Pillo
 from __future__ import annotations
 
 import argparse
+import codecs
 import fcntl
 import json
 import os
@@ -101,6 +102,8 @@ def record(command: list[str]) -> list[tuple[float, str]]:
                                env=environment, close_fds=True)
     os.close(slave)
     chunks, started = [], time.monotonic()
+    # One decoder for the whole stream: a character split across two reads is held until complete.
+    decoder = codecs.getincrementaldecoder("utf-8")("replace")
     while True:
         ready, _, _ = select.select([master], [], [], 0.2)
         if ready:
@@ -110,11 +113,16 @@ def record(command: list[str]) -> list[tuple[float, str]]:
                 break
             if not data:
                 break
-            chunks.append((time.monotonic() - started, data.decode("utf-8", "replace")))
-            sys.stdout.write(data.decode("utf-8", "replace"))
-            sys.stdout.flush()
+            text = decoder.decode(data)
+            if text:
+                chunks.append((time.monotonic() - started, text))
+                sys.stdout.write(text)
+                sys.stdout.flush()
         elif process.poll() is not None:
             break
+    tail = decoder.decode(b"", final=True)
+    if tail:
+        chunks.append((time.monotonic() - started, tail))
     os.close(master)
     process.wait()
     return chunks

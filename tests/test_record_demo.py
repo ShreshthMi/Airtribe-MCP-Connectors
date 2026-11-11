@@ -65,3 +65,15 @@ def test_each_later_question_adds_one_hold_to_the_video(tmp_path, monkeypatch):
     seconds = record_demo.render(chunks, [("first", "a"), ("second", "b")], tmp_path / "v.mp4", hold=1.5)
 
     assert seconds == 2.0 + 1.5
+
+
+def test_a_character_split_across_two_terminal_reads_is_recorded_whole():
+    # "│" is three bytes in UTF-8. The child writes them in two parts with a pause, so the
+    # recorder gets them in two reads, as happened with macOS's smaller PTY reads.
+    writer = ("import sys, time; out = sys.stdout.buffer; out.write(b'\\xe2\\x94'); out.flush(); "
+              "time.sleep(0.5); out.write(b'\\x82\\n'); out.flush()")
+
+    text = "".join(chunk for _, chunk in record_demo.record([sys.executable, "-c", writer]))
+
+    assert "�" not in text
+    assert "│" in text
