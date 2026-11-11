@@ -3,7 +3,9 @@
 Milestone 1's review asked for a short trace of a user request from the tool schema through
 the file operations to the model's final answer. This is that trace for the agent, in two
 parts: a question answered with a tool, and a change of requirements that re-runs the
-screening. File and function names are the real ones; the data is from a live run.
+screening. File and function names are the real ones; the data is from a live run of
+Milestone 3. Since Milestone 4 every file operation goes through the filesystem MCP server;
+[mcp_architecture.md](mcp_architecture.md) shows those messages.
 
 ## Before the conversation: the three screening rounds
 
@@ -16,9 +18,9 @@ the nodes in `matching_agent.py` in order:
 | `parse_jd` | Text, not a file path, so it is used as it is | `matching_agent.py` |
 | `extract_requirements` | Claude returns `{"must_have": ["3+ years of React"], ...}` validated by a Pydantic schema | `claude_tasks.extract_requirements` |
 | `search_resumes` | **Round 1.** Milestone 2's `JobMatcher.match()` ranks all 100 resumes; the top 10 go on | `corpus.Corpus.search` |
-| `rank_candidates` | **Round 2.** Each resume is read with Milestone 1's `read_file`; Claude judges it against each requirement in parallel; quotes are checked against the text | `claude_tasks.judge_candidates`, `screening.evidence_found` |
-| `generate_report` | **Round 3.** Hire / borderline / no hire; suggestions for borderline candidates; the report is saved with Milestone 1's `write_file` | `screening.render_report`, `corpus.Corpus.write_file` |
-| `human_feedback` | `interrupt()` pauses the graph; the checkpointer keeps the state | `matching_agent.py` |
+| `rank_candidates` | **Round 2.** Each resume is read from the filesystem MCP server as a resource (`resources/read resume://<file>`, Milestone 1's `read_file` underneath); Claude judges it against each requirement in parallel; quotes are checked against the text | `corpus.Corpus.resume_text`, `claude_tasks.judge_candidates`, `screening.evidence_found` |
+| `generate_report` | **Round 3.** Hire / borderline / no hire; suggestions for borderline candidates; the report is saved with `write_file` on the MCP server, which never replaces an existing file | `screening.render_report`, `corpus.Corpus.write_file` |
+| `human_feedback` | `interrupt()` pauses the graph; the checkpointer (SQLite, opened by `chat.py`) keeps the state | `matching_agent.py`, `chat.open_checkpointer` |
 
 ## Part 1: "Compare the top 3 matches side by side"
 
@@ -45,8 +47,9 @@ Compare the top 3 matches side by side
 ```
 
 **3. Claude is offered the tools.** `llm.Claude.converse()` sends one Messages API request
-with `SYSTEM_PROMPT` and the twelve tool schemas in `agent_tools.TOOLS`. The one that
-matters here:
+with `SYSTEM_PROMPT` and the tool schemas from `agent_tools.tools_for(corpus)`: the eight
+local tools, plus every tool the filesystem MCP server lists in `tools/list` (the four
+Milestone 1 tools, `batch_process` and the watch tools). The one that matters here:
 
 ```json
 {"name": "compare_candidates", "strict": true,
@@ -66,7 +69,7 @@ matters here:
 **5. The tool runs.** `Toolbox.run()` looks up `tool_compare_candidates`, resolves each id
 against the shortlist, and calls `screening.comparison_table()`. No Claude call is needed:
 the three were judged in Round 2 and the verdicts are cached in the state. A candidate
-off the shortlist would be read with Milestone 1's `read_file` and judged on the spot.
+off the shortlist would be read from the MCP server and judged on the spot.
 The result goes back as:
 
 ```json
@@ -120,8 +123,9 @@ and `route_after_agent` sends the graph to `search_resumes` instead of back to t
 - Chloe Martin: #6 -> #10 (fit 50 -> 70; changed requirements: TypeScript met, Next.js partial)
 ```
 
-Then `human_feedback` pauses for the next message, and the loop continues until the user
-types `quit`, which routes to `END`.
+Then `human_feedback` pauses for the next message. When the user types `quit`, `chat.py`
+stops reading but leaves the graph paused in its SQLite checkpoint, so
+`python chat.py --session <name>` picks the conversation up later.
 
 ## Where to look next
 

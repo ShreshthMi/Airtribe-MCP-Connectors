@@ -514,3 +514,12 @@ def main(argv: list[str] | None = None) -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def __getattr__(name: str):
+    """`mcp dev filesystem_mcp_server.py` looks for a module-level FastMCP called `mcp`; build it on
+    first access (with the default configuration), so importing this module has no side effects."""
+    if name == "mcp":
+        globals()["mcp"] = server = build_server()
+        return server
+    raise AttributeError(name)

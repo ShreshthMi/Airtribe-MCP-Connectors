@@ -1,324 +1,375 @@
-# Agentic Profile Matching
+# Agentic Profile Matching over MCP (Milestone 4)
 
-A LangGraph agent that screens 100 resumes for a job in three rounds and then talks it over
-with the recruiter. Ask it in plain English for "candidates with React and 3+ years
-experience", compare the matches, ask why one outranks another, change the requirements
-halfway through, and it re-screens and tells you who moved and why.
+Milestone 3's LangGraph screening agent, rebuilt on the **Model Context Protocol**. The
+Milestone 1 file tools now live in a standalone MCP server,
+[`filesystem_mcp_server.py`](filesystem_mcp_server.py). It speaks JSON-RPC 2.0 over stdio
+(or streamable HTTP), exposes the files as MCP resources, and adds `watch_directory()` and
+`batch_process()`. The agent in [`matching_agent.py`](matching_agent.py) no longer imports
+the file tools: it spawns the server and reaches every resume, job description and report
+through an MCP client. It can also connect other MCP servers, such as the reference *fetch*
+server, so a job posting can be given by URL.
 
 ```bash
 uv venv --python 3.12 .venv && VIRTUAL_ENV=.venv uv pip install -r requirements-dev.txt
-cp .env.example .env            # then add your ANTHROPIC_API_KEY
-.venv/bin/python scripts/build_index.py   # build the Round 1 index once (local MiniLM by default)
-.venv/bin/python chat.py        # talk to the agent
-.venv/bin/python -m pytest      # 208 tests, offline, a few seconds
+cp .env.example .env                              # then add your ANTHROPIC_API_KEY
+.venv/bin/python scripts/build_index.py           # the Round 1 index, once
+.venv/bin/python -m pytest                        # the offline suite, no API key
+.venv/bin/python scripts/mcp_tour.py              # the server in raw JSON-RPC, no API key
+.venv/bin/python chat.py --show-mcp               # the agent, with its MCP calls shown
 ```
+
+**What changed since Milestone 3:** everything in
+[`f538978...main`](https://github.com/ShreshthMi/Airtribe-MCP-Connectors/compare/f538978...main)
+(`git diff f538978..HEAD`). This repository carries Milestone 3's history, so that diff is
+exactly the Milestone 4 work. Milestone 3's own README, with the screening design and its
+human evaluation, is at
+[f538978/README.md](https://github.com/ShreshthMi/Airtribe-MCP-Connectors/blob/f538978/README.md).
 
 ## Deliverables
 
 | The brief asks for | Where it is |
 |---|---|
-| LangGraph agent in `matching_agent.py` | [`matching_agent.py`](matching_agent.py): state, seven nodes, routing |
-| State machine diagram | [`docs/state_machine.md`](docs/state_machine.md), drawn from the compiled graph; also below |
-| Chat interface | [`chat.py`](chat.py), a terminal chat |
-| Test scenarios, 5+ conversation flows | [`tests/test_conversation_flows.py`](tests/test_conversation_flows.py) (17 flow tests, offline) and [`scenarios/`](scenarios/) (6 flows run against the real model, transcripts in [`scenarios/transcripts/`](scenarios/transcripts/)) |
-| Demo video, 5-6 minutes | [`demo/demo.mp4`](demo/demo.mp4), a recorded live session with captions, 5:55 |
-| Tools: Milestone 1 file tools, Milestone 2 RAG search, `extract_requirements`, `compare_candidates`, `generate_interview_questions` | [`agent_tools.py`](agent_tools.py), twelve tools in all |
-| 100 resumes | [`resumes/`](resumes/): Milestone 2's 43 plus 57 generated, described in [`DATASET.md`](DATASET.md) |
+| MCP filesystem server, `filesystem_mcp_server.py` | [`filesystem_mcp_server.py`](filesystem_mcp_server.py) with [`jsonrpc_stdio.py`](jsonrpc_stdio.py), [`server_config.py`](server_config.py), [`mcp_watch.py`](mcp_watch.py), [`mcp_batch.py`](mcp_batch.py) |
+| Milestone 1 tools converted to MCP, exposed as resources too | Tools `list_files`, `read_file`, `search_in_file`, `write_file`; resources `resume://`, `jd://`, `report://` ([below](#tools-and-resources)) |
+| JSON-RPC 2.0 compliant interface | [`jsonrpc_stdio.py`](jsonrpc_stdio.py), tested on the wire by [`tests/test_mcp_stdio.py`](tests/test_mcp_stdio.py) |
+| Proper error handling and status codes | [Error handling](#error-handling), one test per row |
+| Resource discovery endpoints | `resources/list`, `resources/templates/list`, `config://server`, `stats://server` |
+| Configuration management | [`server_config.py`](server_config.py) and [`mcp_server.toml`](mcp_server.toml): flags > `MCP_FS_*` > TOML > defaults |
+| `watch_directory()` and `batch_process()` | [`mcp_watch.py`](mcp_watch.py), [`mcp_batch.py`](mcp_batch.py), [`tests/test_mcp_watch_batch.py`](tests/test_mcp_watch_batch.py) |
+| Refactored LangGraph agent with an MCP client | [`matching_agent.py`](matching_agent.py), [`corpus.py`](corpus.py), [`mcp_client.py`](mcp_client.py), [`agent_tools.py`](agent_tools.py); [`tests/test_architecture.py`](tests/test_architecture.py) |
+| Multi-MCP integration (bonus) | [`mcp_servers.json`](mcp_servers.json), [`mcp_hub.py`](mcp_hub.py), `chat.py --mcp-servers` |
+| State machine / workflow diagram of agent ↔ MCP | [`docs/mcp_architecture.md`](docs/mcp_architecture.md): components, a message-by-message sequence, the state machine annotated with MCP calls |
+| Test scenarios: MCP resource usage and agent workflow | [`tests/`](tests/) and scenarios 07-12 in [`scenarios/`](#tests-and-scenarios) |
+| Demo video, 5-6 minutes | [`demo/mcp_demo.mp4`](demo/mcp_demo.mp4) ([below](#the-demo-video)) |
 
-If you read one more file, make it [`docs/walkthrough.md`](docs/walkthrough.md): it follows
-one chat message from the terminal, through the graph, the tool schema, the tool call and
-the file operations, to Claude's final answer.
+## How to run it
 
-## How it works
+**The server on its own**
 
-```mermaid
-graph TD;
-	__start__([start]) --> parse_jd;
-	parse_jd -.-> extract_requirements;
-	parse_jd -.-> human_feedback;
-	extract_requirements -.-> search_resumes;
-	extract_requirements -.-> human_feedback;
-	search_resumes -->|Round 1| rank_candidates;
-	rank_candidates -->|Round 2| generate_report;
-	generate_report -->|Round 3| human_feedback;
-	human_feedback -.-> agent_turn;
-	human_feedback -.-> human_feedback;
-	human_feedback -.->|quit| __end__([end]);
-	agent_turn -.->|answered| human_feedback;
-	agent_turn -.->|requirements changed| search_resumes;
-	agent_turn -.->|a different job| parse_jd;
+```bash
+.venv/bin/python filesystem_mcp_server.py                     # stdio: what an MCP client spawns
+.venv/bin/python filesystem_mcp_server.py --transport streamable-http --port 8765   # http://127.0.0.1:8765/mcp
+.venv/bin/python filesystem_mcp_server.py --help              # every configuration flag
 ```
 
-Dashed edges are decided at run time by the node's result. The exact diagram LangGraph
-draws from the compiled graph is in [`docs/state_machine.md`](docs/state_machine.md)
-(`python matching_agent.py --diagram` regenerates it).
+**In the MCP Inspector** (needs Node.js):
 
-**The pipeline** is the brief's: Parse JD, Extract Requirements, Search Resumes, Rank
-Candidates, Generate Report, then a human feedback loop.
+```bash
+npx @modelcontextprotocol/inspector .venv/bin/python filesystem_mcp_server.py
+```
 
-| Node | Round | What it does |
+`mcp dev filesystem_mcp_server.py` works too: the module exposes a FastMCP object named
+`mcp`. That route runs the SDK's own stdio transport, though, without the JSON-RPC checks
+described below. The Inspector's CLI mode is a quick check:
+`npx @modelcontextprotocol/inspector --cli .venv/bin/python filesystem_mcp_server.py --method tools/list`.
+
+**The agent**
+
+```bash
+.venv/bin/python chat.py --show-mcp                        # each MCP request is shown in magenta
+.venv/bin/python chat.py --session acme-backend            # a named, saved session; rerun to resume it
+.venv/bin/python chat.py --sessions                        # list saved sessions
+.venv/bin/python chat.py --watch                           # watch resumes/ and tell the agent about new files
+.venv/bin/python chat.py --mcp-servers --show-mcp          # also connect the servers in mcp_servers.json (fetch)
+```
+
+**Without an API key:** `scripts/mcp_tour.py` (the server in raw JSON-RPC: scenarios 07-10),
+`scripts/bench_mcp.py` (writes [`docs/benchmarks.md`](docs/benchmarks.md)) and the test suite.
+
+## Part A: the filesystem MCP server
+
+The server is built on the official `mcp` Python SDK, pinned at **1.30.0** (FastMCP API,
+protocol revision **2025-11-25**). The current 2.x line renamed that API, and
+`langchain-mcp-adapters` still needs `mcp<2`. The agent needs neither, because it calls the
+Anthropic SDK directly. Milestone 1's `fs_tools.py` is imported from the vendored,
+hash-checked copy in [`milestone2_rag/milestone1_tools/`](milestone2_rag/milestone1_tools/);
+none of its logic is reimplemented. The server sets its sandbox root
+(`$FS_ASSISTANT_ROOT`) once, at start-up, from the configuration.
+
+### Tools and resources
+
+| Tool | What it does |
+|---|---|
+| `list_files(directory, extension?)` | Milestone 1, limited to `resumes/`, `job_descriptions/`, `reports/` |
+| `read_file(filepath)` | Milestone 1: text of a .txt, .md, .pdf or .docx file (PDF and DOCX extracted) |
+| `search_in_file(filepath, keyword, whole_word?)` | Milestone 1: each match with its line and context |
+| `write_file(filepath, content)` | Milestone 1, limited to `reports/`; **never replaces an existing file** |
+| `watch_directory(directory?, extensions?)` | Starts a watch, by default on `resumes/`. Each new file, once its size is stable, becomes a resource, and connected clients get `notifications/resources/list_changed` plus a log message |
+| `get_watch_events(watch_id, since?)` | The buffered events, for clients (or a model) that do not handle notifications |
+| `unwatch_directory(watch_id)` | Stops a watch |
+| `batch_process(paths? \| directory?, operation, keyword?)` | `read`, `search` or `stats` over many files at once: per-file results, `notifications/progress`, capped at `batch_max_files` |
+
+| Resource | What it is |
+|---|---|
+| `resume://{filename}`, `jd://{filename}`, `report://{filename}` | Templates: any file in that folder, as text |
+| one concrete resource per file | Listed by `resources/list`; a file the watcher sees is added and announced |
+| `config://server` | The effective configuration and which layer each value came from |
+| `stats://server` | How often each tool and resource has been used since start-up |
+
+### How the brief's wording is read
+
+- **"Expose all Milestone 1 tools as MCP resources."** In MCP, *tools* are actions the model
+  chooses to call, and *resources* are data the application reads. The server does both:
+  the four Milestone 1 functions are tools, and the files they work on are resources. The
+  agent uses each half as intended. Claude opens files with the tools; the graph's own
+  reads (Round 2 judging, suggestions) are `resources/read resume://…`.
+- **"JSON-RPC 2.0 compliant."** Every MCP message is a JSON-RPC 2.0 message. On its own, the
+  SDK's stdio transport answers a malformed line with a log notification rather than an
+  error response, and an unknown method with -32602. [`jsonrpc_stdio.py`](jsonrpc_stdio.py)
+  checks each line before the SDK sees it, and answers -32700, -32600 and -32601 as
+  JSON-RPC prescribes. **JSON-RPC batches are not supported, deliberately.** MCP removed
+  batching in revision 2025-06-18 ("Remove support for JSON-RPC batching", PR #416, in that
+  revision's changelog), and 2025-11-25 did not bring it back. A batch array gets a single
+  -32600 error naming the reason. MCP also forbids null ids, which get -32600 as well.
+- **"Proper error handling and status codes."** There are three layers, below: JSON-RPC
+  error objects for protocol errors, `isError` results with a stable code for tool
+  failures, and HTTP status codes on the HTTP transport.
+
+### Error handling
+
+**Tool failures** are results, not protocol errors, as the 2025-11-25 tools page specifies.
+They have `isError: true`, and both the text content and `structuredContent` are
+`{"success": false, "error_code", "message", "filepath"}`. Messages never contain an
+absolute host path.
+
+| `error_code` | When | Example |
 |---|---|---|
-| `parse_jd` | | Takes pasted text, a one-line request, or a file path read with Milestone 1's `read_file` |
-| `extract_requirements` | | Claude splits it into must-haves and nice-to-haves, and says what it assumed where the request was ambiguous |
-| `search_resumes` | 1 | Milestone 2's hybrid RAG search (embeddings in ChromaDB, BM25, skill match) ranks all 100 resumes; the top 10 go on |
-| `rank_candidates` | 2 | Claude reads each of the 10 and judges every requirement as **met**, **partial** or **missing**, quoting the resume; ten resumes are judged in parallel |
-| `generate_report` | 3 | Hire / borderline / no hire, improvement suggestions for borderline candidates, a Markdown and a JSON report in `reports/` |
-| `human_feedback` | | LangGraph `interrupt()`: the graph pauses until the recruiter replies |
-| `agent_turn` | | Claude answers with tools, and may send the graph back to re-screen or start over |
+| `ACCESS_DENIED` | outside the sandbox, hidden, or outside the folders the operation may use | `read_file("../.env")`, `read_file("/etc/passwd")`, `write_file("resumes/x.md")` |
+| `NOT_FOUND` | no such file or folder | `read_file("resumes/nobody.pdf")` |
+| `UNSUPPORTED_FORMAT` | not an allowed extension, or not a text format for writing | `read_file("resumes/photo.png")`, `write_file("reports/run.py")` |
+| `TOO_LARGE` | over `max_file_mb`, or more files than `batch_max_files` | a 2 KB file with `--max-file-mb 0.001` |
+| `ALREADY_EXISTS` | `write_file` onto an existing file | `write_file("reports/ml_hiring_summary.md")` |
+| `INVALID_ARGUMENT` | a usable type but an unusable value | an empty keyword, `operation: "delete"` |
+| `READ_FAILED` | the file exists but cannot be parsed | a corrupt PDF |
 
-**The score is a formula, not a model output.** Claude's only judgement is per requirement
-(met / partial / missing, with a quote). [`screening.py`](screening.py) turns those into a
-fit score (must-haves count double, partial counts half), a ranking, and a recommendation
-decided by the must-haves alone: every must-have met is *Hire*, any missing is *No hire*,
-anything in between is *Borderline*. Requirements a resume cannot show ("excellent
-communication", "collaborates with remote teams") are set aside as interview checks when
-the posting is read: listed in the report and covered by the interview questions, but never
-scored, since their absence from a resume says nothing about the person. Because it is a formula, "why did A rank above B?" has
-an exact answer: the requirements where their judgements differ.
+**Protocol errors** are JSON-RPC error objects:
 
-**Quotes are checked.** Every quote Claude gives as evidence is looked up in the resume,
-word by word (so a quote that runs across a bullet or a line break still matches, and
-"Java" is never found inside "JavaScript"). A quote must be at least three words, and may
-skip text with "..." only within one passage. A "met" whose quote cannot be found counts
-only as partial and is flagged in the report, so an invented qualification cannot carry a
-candidate to *Hire*.
-
-**Nothing is guessed.** If Claude cannot judge a resume (a refusal, or an answer that
-cannot be read), that candidate is left out of the round and named in the summary, and the
-next re-screen tries again. A requirement Claude skips is asked again on its own; it is
-never filled in as "missing". Reports are never overwritten: each round gets a new file.
-
-### Tools
-
-| Group | Tools |
+| Code | When |
 |---|---|
-| Milestone 1 file tools | `list_files`, `read_file`, `search_in_file`, `write_file` (writes only into `reports/`) |
-| Milestone 2 RAG search | `search_resumes` (read-only; does not change the shortlist) |
-| From the brief | `extract_requirements`, `compare_candidates`, `generate_interview_questions` |
-| Explainability | `explain_ranking`, `get_candidate_report` |
-| Steering the graph | `update_requirements` (re-screen), `new_job_description` (start over) |
+| -32700 Parse error | the line is not JSON (`id: null`) |
+| -32600 Invalid Request | a batch array, not an object, `"jsonrpc"` not `"2.0"`, a null or non-scalar id |
+| -32601 Method not found | a method MCP does not define, e.g. `files/delete_everything` |
+| -32602 Invalid params | params failing the request schema; a `tools/call` for a tool that does not exist; a resource that is hidden or not allowed |
+| -32002 Resource not found | `resources/read` of an unknown URI or a missing file (with `data.uri` and `data.error_code`) |
+| -32603 Internal error | a handler crashed, or a resource exists but cannot be read |
 
-A tool never edits the graph state itself: it records what it wants changed, and the
-`agent_turn` node hands that to LangGraph when the turn ends. A tool that fails returns an
-error to Claude instead of crashing the turn.
+Arguments of the wrong type (`read_file(filepath=5)`) are rejected by the SDK before the
+tool runs. The spec classes these as tool-execution errors, so they come back as an
+`isError` result naming the field. **Over HTTP** (`--transport streamable-http`), the SDK's
+transport adds status codes: 406 without `Accept: application/json, text/event-stream`, 404
+for an unknown `mcp-session-id` or path, and 400 for a body that is not JSON. Tests:
+[`test_mcp_server.py`](tests/test_mcp_server.py) (every tool code),
+[`test_mcp_stdio.py`](tests/test_mcp_stdio.py) (every protocol code, on the wire),
+[`test_mcp_http.py`](tests/test_mcp_http.py).
 
-### Agent state
+**Security point.** The model cannot read the API key through MCP: `read_file("../.env")`,
+`read_file(".env")` and `resume://../.env` are all refused, and `.env` never appears in
+`resources/list`. The server process is started with the SDK's minimal environment, so it
+does not have `ANTHROPIC_API_KEY` at all. A test reads its `/proc/<pid>/environ` to check.
 
-`ScreeningState` in [`matching_agent.py`](matching_agent.py) holds the three things the
-brief asks for: the conversation history (`messages`), the job requirements
-(`requirements`, and `previous_requirements` for explaining changes), and the shortlist with
-its reasoning (`shortlist`, `screened`, `verdicts`, `suggestions`, `ranking_changes`).
-LangGraph's checkpointer keeps it between turns.
+### Configuration
 
-## Changing requirements mid-conversation
+[`server_config.py`](server_config.py) builds one frozen configuration from four layers: command-line
+flags, then `MCP_FS_*` environment variables, then [`mcp_server.toml`](mcp_server.toml) (or
+`--config` / `MCP_FS_CONFIG`), then the defaults. It is validated at start-up: a bad value
+stops the server with exit code 2 and a message naming the field and its layer, e.g.
+`invalid configuration: batch_concurrency (cli): must be between 1 and 64`. The effective
+configuration is published read-only as `config://server`.
 
-When the recruiter says "TypeScript is a must-have too", Claude calls
-`update_requirements` and the graph goes back to Round 1. Two rules keep the resulting
-changes explainable:
+| Setting | Default | Meaning |
+|---|---|---|
+| `root` | the project folder | the sandbox root for Milestone 1 (`--root`, `MCP_FS_ROOT`) |
+| `readable_folders` / `writable_folders` | `resumes, job_descriptions, reports` / `reports` | the folder policy |
+| `allowed_extensions` | `.txt .md .pdf .docx .json .csv` | what may be read or written |
+| `max_file_mb` | 20 | size limit (Milestone 1's own read limit is the ceiling) |
+| `batch_max_files`, `batch_concurrency`, `batch_preview_chars` | 200, 4, 160 | `batch_process` limits |
+| `watch_debounce_ms`, `watch_force_polling`, `watch_buffer_size` | 300, false, 500 | `watch_directory` |
+| `transport`, `host`, `port` | stdio, 127.0.0.1, 8765 | `stdio`, `streamable-http` or `sse` |
+| `log_level` | INFO | logs go to stderr only; stdout is the protocol channel |
 
-1. **Only new requirements are judged.** Verdicts are cached by requirement text, so the
-   candidates already judged on "3+ years of React" are asked only about TypeScript. Their
-   React verdicts stay exactly as they were, and every move in the ranking comes from the
-   change the recruiter made, not from Claude answering the same question differently.
-2. **The previous shortlist is carried forward.** The new search can rank someone lower,
-   but they are judged on the new requirements before they can leave the list. An early
-   version did not do this, and adding a nice-to-have knocked the strongest React candidate
-   out at Round 1, before Round 2 ever saw her.
+### `watch_directory()` and `batch_process()`
 
-The reply then lists each change, for example
-`Hana Sato: #2 -> #4 (fit 100 -> 90; changed requirements: TypeScript met, Next.js partial)`.
+- **The watcher** runs `watchfiles.awatch` in a background task. It ignores hidden files,
+  Office lock files (`~$…`) and other extensions. It announces a file only when its size is
+  non-zero and the same across two checks, because PDF and DOCX writes are not atomic, and
+  it re-checks a half-written file on a timer. Each file is announced once, with an
+  increasing sequence number, into a bounded buffer. Watches stop on `unwatch_directory` and
+  at shutdown.
+- **`batch_process`** runs Milestone 1 calls in worker threads under a semaphore. Each file
+  gets `{path, ok, error_code?, chars, preview, ms}`, so one corrupt file never fails the
+  batch. Progress goes out after each file. **What "efficiently" means, measured**
+  ([`docs/benchmarks.md`](docs/benchmarks.md), `scripts/bench_mcp.py`): one `batch_process`
+  over the 100 resumes took about half the time of 100 separate `read_file` requests. For
+  Claude it is one tool call with a compact result, not 100. More worker threads did *not*
+  speed up reading this small, local corpus, because parsing is pure Python under the GIL.
+  The default is therefore 4, kept for slower storage, and the benchmark page says so.
 
-## What the earlier milestones' reviews asked for
+## Part B: the agent, through MCP
 
-| Review remark | What this milestone does |
+**Same functionality, cleaner architecture.** The graph itself did not change: the same seven
+nodes, edges and state ([`docs/state_machine.md`](docs/state_machine.md) regenerates
+identically). What changed is underneath:
+
+- **[`mcp_client.py`](mcp_client.py)** is a synchronous facade over the async MCP client: an
+  anyio blocking portal holding one `ClientSession` over stdio. It is safe to call from
+  Round 2's worker threads, receives the server's notifications, restarts a dead server
+  once, and writes the server's log to `logs/`.
+- **[`corpus.py`](corpus.py)** no longer imports `fs_tools` or Milestone 2's
+  `resume_loader`. Its lock and its folder checks are gone, because the server enforces the
+  policy in one place. The four file methods call the server and return the same shapes as
+  before, so none of their callers changed.
+- **[`agent_tools.py`](agent_tools.py)** builds Claude's file-tool schemas from the server's
+  `tools/list` (MCP's `inputSchema` is the same JSON Schema as Anthropic's
+  `input_schema`). Any server tool without a local wrapper is passed straight through. So
+  `batch_process` and the watch tools reached Claude with no agent code for them, and a
+  tool added to the server later will too. The four Milestone 1 tools keep a thin wrapper
+  that marks file text as data, Milestone 3's prompt-injection defence.
+
+**Evidence:**
+- [`tests/test_architecture.py`](tests/test_architecture.py) parses `matching_agent.py`,
+  `agent_tools.py`, `corpus.py` and `chat.py` and fails if any imports `fs_tools`,
+  `resume_loader` or `extractors`. It includes cases showing the check catches each import
+  style, and it was seen to fail when `import fs_tools` was added to `corpus.py`.
+- [`tests/test_mcp_agent.py`](tests/test_mcp_agent.py) runs a screening against the real
+  server process and checks:
+  - the shortlist matches Milestone 3's in-memory run;
+  - every file operation the agent made was counted by the server (`stats://server`);
+  - Claude was offered the server's schemas and could call `batch_process`;
+  - the server's environment has no API key;
+  - a killed server is restarted.
+
+  Milestone 3's own tests run unchanged, with `corpus.py`'s file tests now going through the
+  real server.
+- **Cost of the hop** ([`docs/benchmarks.md`](docs/benchmarks.md)): about 3 ms per
+  `read_file` over stdio, against a fraction of a millisecond in-process. The server starts
+  in well under a second, once per agent process. Both are small next to a Claude call.
+
+**Durable sessions (from the Milestone 3 review).** `chat.py` now checkpoints every
+conversation to SQLite (`.state/checkpoints.sqlite`, LangGraph's `SqliteSaver`) under a
+session name. `quit`, Ctrl-D, a closed terminal or a crash leave the graph paused at
+`human_feedback`. `chat.py --session NAME` resumes it in a new process with its
+requirements, shortlist, verdicts and history, without re-screening; `--sessions` lists
+them. Tested in [`tests/test_chat.py`](tests/test_chat.py).
+
+## Multi-MCP (bonus)
+
+[`mcp_servers.json`](mcp_servers.json) lists MCP servers in the same shape Claude Desktop
+uses: this project's filesystem server, and the reference
+[fetch server](https://pypi.org/project/mcp-server-fetch/) run with `uvx mcp-server-fetch`.
+The fetch server needs `mcp>=2.3`, so it runs in its own environment, which is also the
+point of MCP. [`mcp_hub.py`](mcp_hub.py) starts each server, names its tools
+`<server>__<tool>` (`fetch__fetch`, `filesystem__read_file`) so tools from different
+servers cannot collide, and routes each call by its prefix. Each server gets only the
+SDK's minimal environment plus the variables its entry lists, with `${NAME}` expansion.
+
+With `chat.py --mcp-servers`, Claude is offered `fetch__fetch` next to the filesystem tools.
+`parse_jd` also fetches a posting given by URL ("Screen candidates for the posting at
+https://…") through the fetch server, then screens as usual and writes the report through
+the filesystem server. The fetch server refuses private and loopback addresses by default,
+which is kept. Tests: [`tests/test_mcp_hub.py`](tests/test_mcp_hub.py), including the real
+fetch server against a local web server (with `--allow-private-ips` for that test only).
+
+## Tests and scenarios
+
+`.venv/bin/python -m pytest`: 312 tests, offline, no API key, about half a minute. That is
+Milestone 3's suite plus the MCP tests:
+
+| File | What it checks |
 |---|---|
-| M1: the design is hard to follow for a beginner | One file per job, each opening with what it does and who calls it. Scoring rules are plain functions in `screening.py`; every Claude prompt is in `claude_tasks.py`; only `llm.py` calls the API |
-| M1: add a walkthrough from tool schema to final answer | [`docs/walkthrough.md`](docs/walkthrough.md) |
-| M2: metadata extraction is rule- and vocabulary-based | Requirements are read by Claude, and Round 2 reads each resume against them, so skills outside Milestone 2's 73-word vocabulary (Svelte, Elixir, Flink, Databricks) count. Milestone 2's rule checks are still shown beside Claude's judgement, and the corpus includes resumes where the two disagree ([`DATASET.md`](DATASET.md#deliberate-traps)) |
-| M2: evaluation needs independent human labels | Partly. One human labeller graded 40 candidates on three real postings; most people the search surfaced were at least borderline, but the hire rule is much stricter than the person, and AI-written labels disagree with the person no better than chance. Two independent labellers are still needed. See [Results so far](#results-so-far-one-labeller-three-real-postings) |
-| M2: embeddings are HuggingFace-only | Round 1 can use Ollama (local, no key), Voyage AI or OpenAI as well as MiniLM: [`embedders.py`](embedders.py), built with `scripts/build_index.py`. Which one is better on this task is measured against the human labels, not assumed |
+| `test_mcp_server.py` | every tool, every tool error code, resources, templates, resource error codes, stats (in-memory MCP sessions) |
+| `test_mcp_stdio.py` | the real server process in raw JSON-RPC lines: integer and string ids, every protocol error code, nothing but protocol on stdout |
+| `test_mcp_http.py` | the streamable HTTP transport's status codes |
+| `test_server_config.py` | precedence of the four layers, fail-fast validation, exit code 2 |
+| `test_mcp_watch_batch.py` | new, ignored and half-written files under watch; `list_changed`; batch errors, progress, limits, concurrency |
+| `test_mcp_agent.py`, `test_architecture.py` | Part B, as above |
+| `test_mcp_hub.py` | namespacing and routing across two servers, variable expansion, a URL posting through the graph, the real fetch server |
+| `test_chat.py` | adds a session saved, then resumed in a fresh agent |
 
-## Evaluating against human labels
+| Scenario | What it shows | Transcript |
+|---|---|---|
+| 07 MCP discovery | handshake, `tools/list`, `resources/list`, templates, `config://server`, a tool call | [07](scenarios/transcripts/07_mcp_discovery.txt) |
+| 08 watch a new resume | a resume arrives; `list_changed` and a log message are pushed; it becomes a resource | [08](scenarios/transcripts/08_mcp_watch.txt) |
+| 09 batch over 100 resumes | progress notifications; per-file errors in a mixed batch | [09](scenarios/transcripts/09_mcp_batch.txt) |
+| 10 errors | `../.env`, an absolute path, a missing file, an unsupported format, an overwrite; every JSON-RPC error code | [10](scenarios/transcripts/10_mcp_errors.txt) |
+| 11 agent via MCP | a live screening with `--show-mcp`: every file operation visible as an MCP request | [`scenarios/11_agent_via_mcp.txt`](scenarios/11_agent_via_mcp.txt) |
+| 12 multi-MCP | a posting fetched by URL through the fetch server, the report written through the filesystem server | [`scenarios/12_multi_mcp.txt`](scenarios/12_multi_mcp.txt) |
 
-The resumes, the traps and the agent were all written in this project, so the only
-evaluation that means anything is one done by people who were not. The tools for it are
-here; the labels have to come from outside.
-
-1. **Postings.** Put 3-5 real job postings, written by people who never saw these resumes,
-   in `job_descriptions/` as `<posting>.txt` (for example `real_frontend.txt`).
-2. **Sheets.** Build the indexes to compare (step 5), then write blind sheets that list
-   everyone any of them ranks in its top 10, alphabetically, with no rank or verdict:
-   `python scripts/evaluate.py --providers huggingface ollama --make-sheets A B --postings real_sre real_data`.
-   This also freezes each posting's requirements in `evaluation/private/requirements/`, so the
-   evaluation later scores exactly what the sheets were made from. For one or two postings
-   use `python scripts/human_eval.py template --all` instead, which lists every resume;
-   recall cannot be measured without it.
-3. **Labels.** Two people grade every row on their own copy: 2 would interview, 1
-   borderline, 0 would not. `python scripts/grade.py <posting> <labeller>` grades a sheet in the terminal, showing
-   each resume (PDF and Word included) as text and never the agent's view. Then check they read the rubric the same way:
-   `python scripts/human_eval.py agreement evaluation/labels/real_frontend_alice.csv evaluation/labels/real_frontend_bob.csv`
-   reports Cohen's kappa, plain and weighted, and lists any 2-versus-0 disagreements.
-4. **The agent's recommendations** against each labeller and their consensus:
-   `python scripts/human_eval.py score reports/<round>.json evaluation/labels/real_frontend_*.csv`.
-5. **The rankings, and embedding providers.** Build an index per provider, then evaluate:
-
-   ```bash
-   .venv/bin/python scripts/build_index.py --provider huggingface
-   .venv/bin/python scripts/build_index.py --provider ollama     # or voyage / openai, with a key in .env
-   .venv/bin/python scripts/evaluate.py --providers huggingface ollama
-   ```
-
-   For every posting and provider, `evaluate.py` reports Round 1's P@5, P@10, nDCG@10 and
-   (with a full sheet) R@10, and Round 2's P@5, nDCG@10 and how many of its *Hire*
-   recommendations the labellers agree with, and how often the agent's hire / borderline / no
-   hire matches their grade. The table goes to `evaluation/results.md`.
-
-Two details keep the comparison fair. Milestone 2 scales similarity through a band
-hand-set for MiniLM (0.15-0.65); another model scores on another scale, so
-`build_index.py` measures each model's own band over the job descriptions and saves it
-with the index (MiniLM's measured band is 0.33-0.68), and `evaluate.py` refuses an index
-without one. And Round 2's judgements are shared between providers, so a candidate both
-rank highly is judged once and judged the same way.
-
-### Results so far: one labeller, three real postings
-
-There was not time for two independent labellers. As a first human check, the project's
-author graded the pooled shortlists of three real postings (a senior SRE, a senior data
-engineer and a senior backend engineer: 40 candidates) with `scripts/grade.py`, which shows
-only the posting and the resumes. That is one person, who also shaped the design, so there
-is no agreement score and this is **not** the independent evaluation Milestone 2's review
-asked for; it is the first human judgement of the agent on real postings. The labeller
-graded none of the 40 "would interview", 29 borderline and 11 "would not".
-
-| Provider | R1 P@5 | R1 P@10 | R1 nDCG@10 | R2 P@5 | R2 nDCG@10 | R3 agreement |
-|---|---|---|---|---|---|---|
-| MiniLM (`huggingface`) | 0.80 | 0.67 | 0.75 | 0.60 | 0.69 | 0.33 |
-| `ollama` nomic-embed-text | 0.67 | 0.73 | 0.74 | 0.73 | 0.75 | 0.27 |
-
-Means over the three postings; each posting is in [`evaluation/results.md`](evaluation/results.md).
-
-- **Round 1 surfaces plausible people; how many it misses is unknown.** 29 of the 40
-  candidates the two indexes put in their top 10 were graded at least borderline. P@10 of
-  0.67-0.73 is about that base rate, so within the pool the order adds little, and without
-  grades for the other 60 resumes recall cannot be measured.
-- **The embedding providers tie.** They differ by one candidate or so per posting, in
-  both directions; three postings cannot separate them.
-- **Round 2 did not improve the ranking.** Re-ranking the top 10 by Claude's judgements
-  lowered P@5 for MiniLM (0.80 to 0.60) and raised it for Ollama (0.67 to 0.73). With no
-  candidate graded "would interview", there was little for it to put first.
-- **Round 3 is far stricter than the person.** The agent recommended *no hire* for every
-  candidate in every top 10 (its agreement score equals, in all six posting-provider cases,
-  exactly the share the labeller graded 0), while the labeller judged most of them
-  borderline. Real postings list many must-haves - AI coding tools, crypto, Snowflake - and
-  "any missing must-have means no hire" rejects people a recruiter would still consider. A
-  softer rule (one missing must-have makes a candidate borderline, say) is the obvious next
-  change, but it needs testing on labels it was not tuned on.
-- **AI labels would have told a different story.** A pilot labelled by Claude
-  ([`evaluation/ai_pilot_results.md`](evaluation/ai_pilot_results.md)) graded 18 of the
-  same 40 candidates "would interview" where the person graded none; the two agree no
-  better than chance (Cohen's kappa -0.11 to 0.13). On the backend posting the AI labels
-  rank Ollama far above MiniLM (P@5 1.00 against 0.40) and the human labels rank them the
-  other way (0.60 against 0.80). That is the Milestone 2 reviewer's point, measured.
-
-Still to do: two independent labellers (the packs in `evaluation/private/packs/` are
-ready) and full sheets for the frontend and ML postings, which recall needs.
+Scenarios 07-10 come from `python scripts/mcp_tour.py --transcripts` (raw JSON-RPC, no
+key). Scenarios 11-12 are chat scripts for `python scripts/run_scenarios.py 11_agent_via_mcp
+12_multi_mcp`, which runs them against the real model and needs an API key. Milestone 3's
+scenarios 01-06 are unchanged.
 
 ## The demo video
 
-[`demo/demo.mp4`](demo/demo.mp4) is a live session recorded with
-`python scripts/record_demo.py`: `chat.py` runs [`demo/demo_script.txt`](demo/demo_script.txt)
-against the real model under a pseudo-terminal, and the output is replayed frame by frame
-at the speed it arrived, with a caption for each step. It shows the progress of each round,
-every tool call, and the answers. The one change to the timing is a 14-second pause before
-each new question, so the answer above it can be read; the agent's own work plays at real
-speed. 5 minutes 55 seconds. `--replay` re-renders the saved session without calling the API.
+[`demo/mcp_demo.mp4`](demo/mcp_demo.mp4) is rendered by `python scripts/record_mcp_demo.py`
+from terminal sessions recorded under a pseudo-terminal and replayed at their real speed,
+with captions. It is not a screen capture and has no voice-over. It has four segments:
 
-## Tests
+1. the server in raw JSON-RPC: handshake, discovery and errors;
+2. `watch_directory` catching a new resume, and `batch_process` over 100 resumes;
+3. the agent live through MCP, with a posting fetched by URL;
+4. the test suite.
 
-```bash
-.venv/bin/python -m pytest --cov=. --cov-report=term-missing
-```
+In the live chat, waits longer than 4 seconds with no output are shortened to 4 seconds,
+and the title card says so. The recorded sessions are in `demo/segments/`, and `--replay`
+re-renders them. Milestone 3's video is still at [`demo/demo.mp4`](demo/demo.mp4).
 
-Offline and fast: Claude and the corpus are replaced by scripted stand-ins in
-[`tests/fakes.py`](tests/fakes.py) that return real SDK message objects, so the agent code
-under test is the code that runs live. The conversation flows run through the real compiled
-graph: natural-language search through all three rounds, comparing the top 3, "why did A
-rank higher than B" (and the question asked the wrong way round), refining requirements
-with re-ranking and explanations, interview questions, switching to a new job description
-from a file, quitting, non-hiring input, and failures (a tool error, an API outage retried
-from the failed step, a runaway tool loop).
+## What the Milestone 3 review asked for
 
-To run the six scenarios in [`scenarios/`](scenarios/) against the real model and save
-their transcripts:
+| Review point | What was done |
+|---|---|
+| Replace the in-memory checkpointer and per-run thread ids with durable state, so conversations resume across sessions | Done: SQLite checkpoints and named sessions ([above](#part-b-the-agent-through-mcp)) |
+| Expand the evaluation with independent labellers and broader resume coverage, then calibrate ranking and hire thresholds | **Not done in this milestone.** It needs people other than the author to label postings, which could not be arranged for this deadline. Milestone 3's evaluation tooling (`scripts/human_eval.py`, `scripts/evaluate.py`) is unchanged and ready for that. Its caveats still apply: one non-independent labeller, three real postings, Round 2 re-ranking not shown to help. |
 
-```bash
-.venv/bin/python scripts/run_scenarios.py
-```
+## Limitations
 
-## Cost
+- **The HTTP transport has no authentication.** It binds to 127.0.0.1 by default; anything
+  beyond local use would need the SDK's auth support configured. The agent uses stdio.
+- **New resumes are not indexed automatically.** `watch_directory` makes a new resume
+  readable through MCP at once, and `chat.py --watch` tells the agent about it. Round 1's
+  embedding search finds it only after `scripts/build_index.py` is run again.
+- **`batch_process` threads do not speed up local parsing** (see above). The win is fewer
+  round trips and tool calls.
+- **One server process per agent process.** The MCP hop costs a few milliseconds per call.
+  A crashed server is restarted once, then the error is reported.
+- **Matching is not hiring.** Everything in Milestone 3's "Limitations and responsible use"
+  still holds: recommendations support a human decision, protected characteristics are
+  never ranked on, resumes are untrusted input, and the evaluation is internal.
 
-Each screening round makes about 15 Claude calls (one to read the job, ten to judge
-resumes, a few for borderline suggestions); a re-screen judges only what is new; each chat
-turn makes one to three. The chat prints the session's token use when it ends.
+## How this was built
 
-Measured on the six scenario runs, `claude-opus-5-5` at the default `medium` effort, priced
-at $4 / $20 per million input / output tokens:
+Milestone 4 was built by an AI coding assistant (Claude Code, Anthropic's coding agent),
+working in a cloud session on 11 November 2026 from a handoff brief the author prepared and
+approved. The author made the decisions recorded there:
+- the scope, building on Milestone 3;
+- the repository and branch;
+- how the video is produced;
+- attempting the bonus;
+- disclosing AI use in this README rather than in commit trailers.
 
-| Scenario | Claude calls | Input tokens (+ from cache) | Output tokens | Cost |
-|---|---|---|---|---|
-| 01 React search, compare, explain | 20 | 18,412 (+7,859) | 4,885 | $0.17 |
-| 02 refine twice, explain the moves | 42 | 43,343 (+10,370) | 12,798 | $0.43 |
-| 03 full job description, report, questions | 23 | 23,060 (+15,633) | 17,345 | $0.44 |
-| 04 two jobs | 34 | 38,555 (+14,342) | 28,127 | $0.72 |
-| 05 beyond the shortlist, save a summary | 25 | 22,098 (+20,605) | 11,792 | $0.33 |
-| 06 edge cases | 17 | 16,944 (+2,823) | 4,449 | $0.16 |
-
-About $2.25 for all six; slightly more in practice, because the chat's counter leaves out
-the small cost of writing to the prompt cache. Output tokens dominate the cost, and most of them are Round 2's
-judging, so a screening round with more requirements costs more.
-
-`ANTHROPIC_MODEL` and `ANTHROPIC_EFFORT` in `.env` change the model and effort.
-
-## Limitations and responsible use
-
-- **Matching is not hiring.** Recommendations are for a human decision-maker, and the
-  agent says so. It is instructed never to rank or speculate on age, gender, nationality or
-  other protected characteristics, but the resumes still carry signals (names, schools,
-  locations) that correlate with them. Real use would need an adverse-impact audit.
-- **The evaluation is internal.** The resumes, the traps and the agent were written in
-  the same project; see [`DATASET.md`](DATASET.md#what-this-dataset-cannot-support).
-- **Round 1 can miss people.** Only the top 10 of the RAG ranking are read by Claude. A
-  strong candidate the search ranks 11th is never judged unless the recruiter asks about
-  them (`compare_candidates` and `search_resumes` judge anyone on request).
-- **Judgements are a model's reading.** The quote check stops invented evidence, not a
-  wrong reading of real evidence; the report shows the quote so a person can check it.
-- **Resumes are untrusted input.** Text from resumes and files is escaped so it cannot
-  close the tags it sits in, the prompts tell Claude to treat it as data, and the only
-  thing the chat can write is a new file in `reports/`. That narrows prompt injection; it
-  does not rule it out. And the quote check proves a resume *says* something, not that it
-  is true.
-- **State lives in memory.** The checkpointer is in-memory, so a conversation ends with the
-  process. LangGraph's SQLite or Postgres checkpointers would make it durable.
+The code, tests, documents and video in the Milestone 4 commits were written or produced
+by the assistant. The author reviewed them and is responsible for the submission.
+Milestones 1-3 are unchanged except where this README says so.
 
 ## Repository layout
 
 ```
-matching_agent.py      the LangGraph graph: state, nodes, routing, diagram export
-agent_tools.py         the chat turn's system prompt, tool schemas and Toolbox
-screening.py           scoring, ranking, recommendations, explanations, reports (no I/O)
-claude_tasks.py        every Claude prompt and output schema
-llm.py                 the only module that calls the Anthropic API
-corpus.py              adapter over the Milestone 1 file tools and Milestone 2 RAG search
-chat.py                terminal chat
-milestone2_rag/        Milestone 2, vendored verbatim (see PROVENANCE.md)
-resumes/               100 resumes          job_descriptions/   7 job descriptions
-scenarios/             six conversation scripts and their live transcripts
-demo/                  demo video, its script and the recorded session
-docs/                  walkthrough, state machine diagram
-embedders.py           Round 1 embedding providers: MiniLM, Ollama, Voyage AI, OpenAI
-scripts/               index builder, resume generator, scenario runner, demo recorder,
-                       human labelling (human_eval.py) and evaluation (evaluate.py)
-evaluation/labels/     where label sheets go; evaluation/results.md is written beside it
-tests/                 pytest suite and the scripted stand-ins
-reports/               screening reports written by the agent
+filesystem_mcp_server.py   the MCP server: tools, resources, error codes (Part A)
+jsonrpc_stdio.py           stdio transport with JSON-RPC 2.0 checks
+server_config.py           configuration: flags > MCP_FS_* > mcp_server.toml > defaults
+mcp_watch.py, mcp_batch.py watch_directory() and batch_process()
+mcp_client.py              synchronous MCP client used by the agent (Part B)
+mcp_hub.py                 several MCP servers, namespaced tools (bonus); mcp_servers.json
+corpus.py                  the agent's files (through MCP) and Round 1 search (Milestone 2)
+matching_agent.py          the LangGraph graph (unchanged structure)
+agent_tools.py             Claude's tools: local ones plus the server's tools/list
+chat.py                    terminal chat: --show-mcp, --session, --watch, --mcp-servers
+screening.py, claude_tasks.py, llm.py, embedders.py   Milestone 3, unchanged in role
+milestone2_rag/            Milestone 2 (and Milestone 1's tools inside it), vendored verbatim
+docs/                      mcp_architecture.md, state_machine.md, benchmarks.md, walkthrough.md
+scripts/                   mcp_tour.py, bench_mcp.py, record_mcp_demo.py, run_scenarios.py, ...
+scenarios/                 chat scenarios 01-06 and 11-12; transcripts 01-10 (and 11-12 when run live)
+demo/                      mcp_demo.mp4 and its segments; Milestone 3's demo.mp4
+tests/                     the pytest suite
+resumes/ job_descriptions/ reports/   the data the server serves
 ```

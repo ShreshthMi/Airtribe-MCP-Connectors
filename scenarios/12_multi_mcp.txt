@@ -1,0 +1,6 @@
+# Scenario 12: two MCP servers. The posting is fetched by URL through the fetch server;
+# resumes are read and the report is written through the filesystem server.
+# flags: --show-mcp --mcp-servers
+Screen candidates for the posting at https://raw.githubusercontent.com/ShreshthMi/Airtribe-MCP-Connectors/main/job_descriptions/devops_sre.txt
+Which of the shortlisted candidates mention Terraform? Check their resumes.
+quit

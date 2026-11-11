@@ -1,0 +1,7 @@
+# Scenario 11: the agent's file work, visibly going through the filesystem MCP server.
+# flags: --show-mcp
+job_descriptions/backend_engineer.txt
+Open the top candidate's resume and check whether it mentions Kafka and Redis
+Use batch_process with a keyword search to count how many of all the resumes mention Kubernetes
+Save a three-line summary of the shortlist to a new file in reports/
+quit
