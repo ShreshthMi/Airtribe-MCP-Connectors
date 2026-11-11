@@ -142,7 +142,7 @@ class FileService:
         allowed = ", ".join(f"{f}/" for f in folders)
         if text.startswith(("/", "~")) or ".." in parts or not parts or parts[0] not in folders \
                 or (len(parts) < 2 and not is_dir):
-            return self.error("ACCESS_DENIED", f"Access denied: '{filepath}'. Use a path inside {allowed}", filepath)
+            return self.error("ACCESS_DENIED", f"Access denied: '{filepath}'. Access is limited to {allowed}", filepath)
         if any(p.startswith(".") for p in parts):
             return self.error("ACCESS_DENIED", f"Access denied: '{filepath}' is hidden", filepath)
         return None
